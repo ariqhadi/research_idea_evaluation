@@ -1,0 +1,4 @@
+{
+    "model" : "gpt-5-nano",
+    "temperature": 0
+}

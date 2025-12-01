@@ -1,2 +1,10 @@
 .env
 temps/
+# Python
+__pycache__/
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
