@@ -35,7 +35,7 @@ def idea_generation_loading():
     step1.info("🔄 Generating Research Idea...")
     lit_rev_path_ = "external/multiagent_research_generator/scripts/run_lit_review.sh"
     cmd = ["bash", str(lit_rev_path_), st.session_state.research_topic]
-    # subprocess.run(cmd, text=True, capture_output=True, check=False)
+    subprocess.run(cmd, text=True, capture_output=True, check=False)
     
     lit_rev_path = f"external/multiagent_research_generator/logs/log_2025_07_07/lit_review/{st.session_state.research_topic}.json"
 
@@ -52,7 +52,7 @@ def idea_generation_loading():
     
     idea_gen_path = "external/multiagent_research_generator/scripts/generate_ideas_and_dedup.sh"
     cmd = ["bash", str(idea_gen_path), st.session_state.research_topic]
-    # subprocess.run(cmd, text=True, capture_output=True, check=False)
+    subprocess.run(cmd, text=True, capture_output=True, check=False)
     
     idea_generated = f"external/multiagent_research_generator/logs/log_2025_07_07/ideas_dedup/{st.session_state.research_topic}_diff_personas_proposer_reviser.json"
     
