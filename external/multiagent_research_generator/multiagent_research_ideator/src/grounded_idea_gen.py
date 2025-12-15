@@ -12,6 +12,10 @@ from lit_review_tools import format_papers_for_printing
 from openai import OpenAI
 from utils import cache_output, call_api, shuffle_dict_and_convert_to_string
 
+from dotenv import load_dotenv
+load_dotenv()
+
+
 ROOT = Path(__file__).resolve().parent.parent
 PROMPTS_DIR = ROOT / "prompts"
 

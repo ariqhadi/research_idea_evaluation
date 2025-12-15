@@ -44,18 +44,33 @@ llm_engine="gpt-4o-mini-2024-07-18"
 
 
 ##########################################################
+
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Get the parent directory (multiagent_research_generator root)
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Change to the repo root
+cd "$REPO_ROOT" || exit 1
+
+
+##########################################################
 # Run Literature Review 
 # After we run this, we get lit_review review in the cache dir.
 
-for i in "${!topic_names[@]}"; do
-    topic=${topic_names[$i]}
-    topic_description=${topic_descriptions[$i]}
-    uv run multiagent_research_ideator/src/lit_review.py \
-        --engine $llm_engine \
-        --mode "topic" \
-        --topic_description "${topic_description}" \
-        --cache_name "${cache_dir}/lit_review/${topic}.json" \
-        --max_paper_bank_size 100 \
-        --print_all &
-done
+# for i in "${!topic_names[@]}"; do
+# topic=${topic_names[$i]}
+# topic_description=${topic_descriptions[$i]}
+
+topic_description="$1"
+topic="$1"
+
+uv run multiagent_research_ideator/src/lit_review.py \
+    --engine $llm_engine \
+    --mode "topic" \
+    --topic_description "${topic_description}" \
+    --cache_name "${cache_dir}/lit_review/${topic}.json" \
+    --max_paper_bank_size 100 \
+    --print_all &
+# done
 wait

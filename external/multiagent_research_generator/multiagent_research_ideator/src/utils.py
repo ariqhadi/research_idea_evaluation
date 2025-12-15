@@ -1,6 +1,7 @@
 import json
 import random
-
+from dotenv import load_dotenv
+load_dotenv()
 
 def calc_price(model, usage):
     if "claude-3-5-sonnet" in model:

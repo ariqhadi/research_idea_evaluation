@@ -8,6 +8,8 @@ search_url = "https://api.semanticscholar.org/graph/v1/paper/search/"
 graph_url = "https://api.semanticscholar.org/graph/v1/paper/"
 rec_url = "https://api.semanticscholar.org/recommendations/v1/papers/forpaper/"
 
+from dotenv import load_dotenv
+load_dotenv()
 
 S2_KEY = os.getenv("s2_key").strip()
 

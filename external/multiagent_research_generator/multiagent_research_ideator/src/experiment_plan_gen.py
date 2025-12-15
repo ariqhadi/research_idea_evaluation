@@ -10,6 +10,9 @@ from openai import OpenAI
 from tqdm import tqdm
 from utils import cache_output, call_api, format_plan_json
 
+from dotenv import load_dotenv
+load_dotenv()
+
 ROOT = Path(__file__).resolve().parent.parent
 PROMPTS_DIR = ROOT / "prompts"
 
