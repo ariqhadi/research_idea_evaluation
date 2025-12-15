@@ -13,5 +13,5 @@ dependencies = [
     "langchain-openai (>=1.1.0,<2.0.0)",
     "langchain-core (>=1.1.0,<2.0.0)",
     "semanticscholar (>=0.11.0,<0.12.0)",
-    "langchain_google_genai",
+    "langchain-google-genai (>=1.1.0,<2.0.0)",
 ]
