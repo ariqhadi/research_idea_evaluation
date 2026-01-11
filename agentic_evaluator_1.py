@@ -8,6 +8,8 @@ from tools import get_model
 from pydantic import BaseModel
 from langchain_core.prompts import ChatPromptTemplate
 
+from prompts import *
+
 llm = get_model()
 
 # Define the agent state
@@ -76,19 +78,9 @@ tools = [
 def planning_node(state: AgentState):
     """Agent creates investigation plan"""
     messages = [
-        HumanMessage(content=f"""
-        Given this research proposal: {state['proposal']}
-        
-        Available retrieved papers: {len(state['retrieved_papers'].split('Paper ID:'))-1} papers
-        
-        Create a step-by-step plan to evaluate its novelty and feasibility using the already retrieved papers.
-        Focus on:
-        1. Analyzing overlaps with existing methods
-        2. Identifying unique contributions
-        3. Assessing technical feasibility
-        
-        Return just the plan as a string.
-        """)
+        HumanMessage(content=get_planning_prompt(
+                                proposal = state['proposal'],
+                                num_papers = len(state['retrieved_papers'].split('Paper ID:')) - 1))
     ]
     
     plan_response = llm.invoke(messages)
@@ -101,20 +93,11 @@ def planning_node(state: AgentState):
 def investigation_node(state: AgentState):
     """Agent investigates using retrieved papers"""
     messages = [
-        HumanMessage(content=f"""
-        Current plan: {state['plan']}
-        Findings so far: {state.get('findings', [])}
-        Current iteration: {state.get('iteration', 0)}
-        
-        You have access to pre-retrieved papers. Based on the plan and current findings, what should you analyze next?
-        Choose one:
-        1. Analyze papers for specific aspects (respond with: "TOOL: analyze_papers, FOCUS: <aspect to focus on>")
-        2. Extract technical details (respond with: "TOOL: extract_details, CRITERIA: <what to extract>") 
-        3. Compare methodologies (respond with: "TOOL: compare_methods, ASPECT: <methodology aspect>")
-        4. Conclude investigation (respond with: "CONCLUDE")
-        
-        Respond in the exact format specified above.
-        """)
+        HumanMessage(content= get_investigation_prompt(
+                                plan = state['plan'],
+                                findings = str(state.get('findings', [])),
+                                iteration = state.get('iteration', 0))
+                    )
     ]
     
     decision_response = llm.invoke(messages)
@@ -148,21 +131,10 @@ def investigation_node(state: AgentState):
 def reflection_node(state: AgentState):
     """Agent reflects on progress"""
     messages = [
-        HumanMessage(content=f"""
-        Findings so far: {state.get('findings', [])}
-        Current iteration: {state.get('iteration', 0)}
-        
-        Based on your analysis of the retrieved papers, evaluate the confidence level (0-100) for each aspect:
-        - Novelty assessment confidence (how well you understand what's new)
-        - Feasibility assessment confidence (how realistic the implementation seems)
-        - Overall investigation completeness (do you have enough information)
-        
-        Return a JSON-like response:
-        {{"novelty": <score>, "feasibility": <score>, "overall": <score>}}
-        
-        Then decide: Should I continue investigating (if overall < 75) or conclude?
-        Add on a new line: CONTINUE or CONCLUDE
-        """)
+        HumanMessage(content=get_reflection_prompt(
+                                findings = str(state.get('findings', [])),
+                                iteration = state.get('iteration', 0))
+        )
     ]
     
     confidence_response = llm.invoke(messages)
@@ -208,20 +180,10 @@ class Score_Agent(BaseModel):
 def scoring_node(state: AgentState):
     """Generate final scores and report"""
     messages = ChatPromptTemplate.from_messages([
-        ("human", """
-        Based on analysis of retrieved papers and findings: {findings}
-        Confidence levels: {confidence}
-        
-        Generate final evaluation scores (1-10) for:
-        - Novelty: How new/original is this idea compared to retrieved papers?
-        - Feasibility: How realistic is implementation based on similar work?
-        - Impact: Potential significance of results based on the literature?
-        
-        Provide a recommendation based on the paper analysis and a brief summary explaining the reasoning behind the recommendation.
-        
-        Format as JSON:
-        {{"novelty_score": <1-10>, "feasibility_score": <1-10>, "impact_score": <1-10>, "summary": "<text>", "recommendation": "<Accept/Revise/Reject>"}}
-        """)
+        ("human", get_score_prompt(
+            findings = str(state.get("findings")),
+            confidence = str(state.get("confidence"))
+        ))
     ])
     
     score_agent = messages | llm.with_structured_output(Score_Agent)

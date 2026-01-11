@@ -9,10 +9,8 @@ from agentic_evaluator_1 import run_workflow as run_agentic_evaluator
 st.header("Research Idea Generator and Evaluator", divider= True)
 
 st.subheader("Please input your research topic. ")
-# st.text_input("Example: novel prompting methods to reduce social biases and stereotypes of large language models.",placeholder="Enter your research topic here...", key="research_topic")
 
 
-# Only submit via button (Enter won't trigger your run logic)
 with st.form("topic_form"):
     st.text_input(
         "Example: novel prompting methods to reduce social biases and stereotypes of large language models",
