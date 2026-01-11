@@ -66,3 +66,91 @@ def get_score_prompt(findings: str, confidence: str) -> str:
         {{"novelty_score": <1-10>, "feasibility_score": <1-10>, "impact_score": <1-10>, "summary": "<text>", "recommendation": "<Accept/Revise/Reject>"}}
         
         """
+
+
+###################################
+# WORKFLOW ARGUMENT AGENTIC AI
+###################################
+
+# --- Agent Prompts ---
+
+def get_argument_advocate_prompt(research_idea: str, retrieved_papers: str, history: str) -> str:
+    return f"""You are the ADVOCATE for the proposed research idea.
+            Your goal is to defend the idea, highlight its novelty, and explain why it is significant.
+            Use the provided retrieved papers to support your arguments.
+            Focus on:
+            1. Unique contributions.
+            2. How it improves upon existing methods (referencing the papers).
+            3. Why the potential impact outweighs the risks.
+
+            Research Idea:
+            {research_idea}
+
+            Retrieved Papers:
+            {retrieved_papers}
+
+            Previous Discussion:
+            {history}
+
+            Provide a strong, evidence-based argument in favor of the idea.
+        """
+
+
+def get_argument_skeptic_prompt(research_idea: str, retrieved_papers: str, history: str) -> str:
+    return f"""You are the SKEPTIC of the proposed research idea.
+            Your goal is to critique the idea, point out flaws, and question its novelty.
+            Use the provided retrieved papers to show similarity to prior work or identify weaknesses.
+            Focus on:
+            1. Overlaps with existing work (cite specific papers).
+            2. Potential technical challenges or flaws.
+            3. Why the idea might not be as novel or impactful as claimed.
+
+            Research Idea:
+            {research_idea}
+
+            Retrieved Papers:
+            {retrieved_papers}
+
+            Previous Discussion:
+            {history}
+
+            Provide a critical, evidence-based counter-argument.
+        """
+
+def get_argument_moderator_prompt(research_idea: str, retrieved_papers: str, history: str, iteration: str, max_iterations: str) -> str:
+    return f"""You are the MODERATOR (Expert) guiding a debate between an Advocate and a Skeptic about a research idea.
+            Your goal is to synthesize the arguments, ask probing questions to clarify the idea, and ensure the discussion remains grounded in the literature.
+
+            Research Idea:
+            {research_idea}
+
+            Retrieved Papers:
+            {retrieved_papers}
+
+            Previous Discussion:
+            {history}
+
+            Current Iteration: {iteration} / {max_iterations}
+
+            Task:
+            1. Summarize the key points made by both sides so far.
+            2. If the maximum iterations have been reached or if the discussion has converged, provide a FINAL VERDICT on the idea's novelty and feasibility. Start your response with "VERDICT:".
+            3. If the discussion should continue, ask a specific, probing question to guide the next round of debate.
+
+            """
+def get_argument_score_prompt(findings: str) -> str:
+    return f"""
+        Based on analysis of retrieved papers and findings: {findings}
+        
+        Generate final evaluation scores (1-10) for:
+        - Novelty: How new/original is this idea compared to retrieved papers?
+        - Feasibility: How realistic is implementation based on similar work?
+        - Impact: Potential significance of results based on the literature?
+        
+        Provide a recommendation based on the paper analysis and a brief summary explaining the reasoning behind the recommendation.
+        
+        Format as JSON:
+        {{"novelty_score": <1-10>, "feasibility_score": <1-10>, "impact_score": <1-10>, "summary": "<text>", "recommendation": "<Accept/Revise/Reject>"}}
+        
+        """
+    

@@ -3,7 +3,8 @@ import pandas as pd
 import subprocess, time, json
 
 from get_list_of_papers import call_workflow
-from agentic_evaluator_1 import run_workflow as run_agentic_evaluator
+from agentic_evaluator_linear import run_workflow as run_agentic_evaluator
+from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debate
 
 
 st.header("Research Idea Generator and Evaluator", divider= True)
@@ -110,7 +111,7 @@ def idea_generation_loading():
         st.dataframe(df[cols] if cols else df, use_container_width=True)
     
     
-    agentic_result =run_agentic_evaluator(research_idea, list_of_papers)
+    agentic_result =run_agentic_evaluator_debate(research_idea, list_of_papers)
     
     st.subheader("Agentic Evaluator Result:")
     # try :
