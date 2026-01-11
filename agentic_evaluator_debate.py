@@ -120,7 +120,7 @@ def compile_agentic_workflow():
             "conclude": "scoring"
         }
     )
-    gan_workflow.add_node("scoring",END)
+    gan_workflow.add_edge("scoring",END)
 
     gan_app = gan_workflow.compile()
     
