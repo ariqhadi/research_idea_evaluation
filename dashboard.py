@@ -91,21 +91,12 @@ def idea_generation_loading():
     list_of_papers = json.loads(list_of_papers["messages"][-1].content)
     
     st.subheader("Papers Retrieved:")   
-    # for query, payload in list_of_papers.items():
-    #     with st.expander(f"Query Term: {query}", expanded=False):
-    #         papers = payload.get("data", [])
-    #         if not papers:
-    #             st.write("No papers returned.")
-    #             continue
-    #         df = pd.DataFrame(papers)
-    #         # Keep only common useful columns if present
-    #         cols = [c for c in ["title", "citationCount", "url", "publicationDate"] if c in df.columns]
-    #         st.dataframe(df[cols] if cols else df, use_container_width=True)
             
     all_papers = []
     for query, payload in list_of_papers.items():
         papers = payload.get("data", [])
         for paper in papers:
+            
             # Add the query term to each paper for reference
             paper["query_term"] = query
             all_papers.append(paper)

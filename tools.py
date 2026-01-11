@@ -20,7 +20,6 @@ def get_model():
             openai_api_key=os.getenv("OPENAI_API_KEY")
         )
 
-
 def get_config():
     with open("config.json", "r", encoding="utf-8") as f:
         data = json.load(f) 

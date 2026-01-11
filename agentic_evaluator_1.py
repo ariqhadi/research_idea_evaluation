@@ -179,12 +179,12 @@ class Score_Agent(BaseModel):
 
 def scoring_node(state: AgentState):
     """Generate final scores and report"""
-    messages = HumanMessage(
+    messages = [HumanMessage(
         content = get_score_prompt(
             findings = str(state.get("findings")),
             confidence = str(state.get("confidence"))
         )
-    )
+    )]
     
     score_response = llm.with_structured_output(Score_Agent).invoke(messages)
     
@@ -276,38 +276,38 @@ def run_workflow(research_idea_text: str, papers_json: str):
     # except Exception as e:
     #     print(f"Error running ReAct agent: {e}")
 
-# def __main__():
+def __main__():
 
-#     agentic_app = compile_agentic_workflow()
+    agentic_app = compile_agentic_workflow()
     
-#     research_idea_text = sys.argv[1]
-#     result_llm = sys.argv[2]
-#     # Extract research idea from initial user input
-#     # research_idea_text = result_llm["messages"][0].content
+    research_idea_text = sys.argv[1]
+    result_llm = sys.argv[2]
+    # Extract research idea from initial user input
+    # research_idea_text = result_llm["messages"][0].content
 
-#     # Extract and format retrieved papers
+    # Extract and format retrieved papers
 
-#     papers_json = json.loads(result_llm["messages"][-1].content)  # -2 because -1 is the analysis
-#     retrieved_papers_text = getReferencePaper.prepare_papers_for_llm(papers_json)
+    papers_json = json.loads(result_llm["messages"][-1].content)  # -2 because -1 is the analysis
+    retrieved_papers_text = getReferencePaper.prepare_papers_for_llm(papers_json)
 
-#     print("Running ReAct Agent Evaluation with Pre-Retrieved Papers...")
-#     print(f"Number of retrieved papers: {len(retrieved_papers_text.split('Paper ID:'))-1}")
+    print("Running ReAct Agent Evaluation with Pre-Retrieved Papers...")
+    print(f"Number of retrieved papers: {len(retrieved_papers_text.split('Paper ID:'))-1}")
 
-#     # Run the agent
-#     try:
-#         result = agentic_app.invoke({
-#             "proposal": research_idea_text,
-#             "retrieved_papers": retrieved_papers_text,
-#             "plan": "",
-#             "findings": [],
-#             "scores": {},
-#             "confidence": {},
-#             "iteration": 0,
-#             "next_action": "start"
-#         })
+    # Run the agent
+    try:
+        result = agentic_app.invoke({
+            "proposal": research_idea_text,
+            "retrieved_papers": retrieved_papers_text,
+            "plan": "",
+            "findings": [],
+            "scores": {},
+            "confidence": {},
+            "iteration": 0,
+            "next_action": "start"
+        })
         
-#         print(result)
-#         return result
+        print(result)
+        return result
         
-#     except Exception as e:
-#         print(f"Error running ReAct agent: {e}")
+    except Exception as e:
+        print(f"Error running ReAct agent: {e}")
