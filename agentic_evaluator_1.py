@@ -179,18 +179,20 @@ class Score_Agent(BaseModel):
 
 def scoring_node(state: AgentState):
     """Generate final scores and report"""
-    messages = ChatPromptTemplate.from_messages([
-        ("human", get_score_prompt(
+    messages = HumanMessage(
+        content = get_score_prompt(
             findings = str(state.get("findings")),
             confidence = str(state.get("confidence"))
-        ))
-    ])
+        )
+    )
     
-    score_agent = messages | llm.with_structured_output(Score_Agent)
-    score_response = score_agent.invoke({
-        "findings": str(state.get("findings")),
-        "confidence": str(state.get("confidence")),
-    })
+    score_response = llm.with_structured_output(Score_Agent).invoke(messages)
+    
+    # score_agent = messages | llm.with_structured_output(Score_Agent)
+    # score_response = score_agent.invoke({
+    #     "findings": str(state.get("findings")),
+    #     "confidence": str(state.get("confidence")),
+    # })
     
 
     return {
