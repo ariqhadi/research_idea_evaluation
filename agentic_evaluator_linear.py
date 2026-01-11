@@ -1,78 +1,18 @@
 from langgraph.graph import StateGraph, END, START
-from langchain_core.tools import Tool 
-from typing import TypedDict, Annotated, Literal
-from langchain_core.messages import HumanMessage
-import operator, json, re, os, sys
-from papers_retrieval import getReferencePaper
-from tools import get_model
-from pydantic import BaseModel
-from langchain_core.prompts import ChatPromptTemplate
 
+from typing import  Literal
+from langchain_core.messages import HumanMessage
+
+from papers_retrieval import getReferencePaper
+
+import re
+
+from tools import *
+from models import AgentState, Score_Agent
 from prompts import *
 
 llm = get_model()
 
-# Define the agent state
-class AgentState(TypedDict):
-    proposal: str
-    retrieved_papers: str  # Pre-retrieved papers from earlier pipeline
-    plan: str
-    findings: Annotated[list, operator.add]
-    scores: dict
-    confidence: dict
-    iteration: int
-    next_action: str
-
-# Tools that work with pre-retrieved papers
-def analyze_papers_tool(focus_area: str, papers: str) -> str:
-    """Analyze retrieved papers focusing on a specific area"""
-    return f"Analysis of papers focusing on '{focus_area}': Found relevant insights from the pre-retrieved literature."
-
-def extract_paper_details_tool(paper_criteria: str, papers: str) -> str:
-    """Extract specific details from papers based on criteria"""
-    # Parse papers and extract relevant details
-    lines = papers.split('\n\n---\n\n')
-    relevant_papers = []
-    
-    for paper in lines[:3]:  # Limit to first 3 papers for demonstration
-        if paper.strip():
-            relevant_papers.append(f"Paper analysis for '{paper_criteria}': {paper[:200]}...")
-    
-    return f"Extracted details based on '{paper_criteria}': {len(relevant_papers)} papers analyzed."
-
-def compare_methodologies_tool(methodology_aspect: str, papers: str) -> str:
-    """Compare methodologies in retrieved papers"""
-    return f"Methodology comparison for '{methodology_aspect}': Analyzed methodological approaches in retrieved papers."
-
-def execute_tool(tool_name: str, params: dict, retrieved_papers: str) -> str:
-    """Execute the specified tool with parameters and pre-retrieved papers"""
-    if tool_name == "analyze_papers":
-        return analyze_papers_tool(params.get("focus_area", ""), retrieved_papers)
-    elif tool_name == "extract_details":
-        return extract_paper_details_tool(params.get("criteria", ""), retrieved_papers)
-    elif tool_name == "compare_methods":
-        return compare_methodologies_tool(params.get("aspect", ""), retrieved_papers)
-    else:
-        return f"Tool {tool_name} executed with params {params}"
-
-# Define tools
-tools = [
-    Tool(
-        name="analyze_papers",
-        func=analyze_papers_tool,
-        description="Analyze retrieved papers focusing on specific aspects"
-    ),
-    Tool(
-        name="extract_details", 
-        func=extract_paper_details_tool,
-        description="Extract specific methodological or technical details"
-    ),
-    Tool(
-        name="compare_methods",
-        func=compare_methodologies_tool,
-        description="Compare methodologies across retrieved papers"
-    ),
-]
 
 # Define agent nodes
 def planning_node(state: AgentState):
@@ -165,16 +105,7 @@ def reflection_node(state: AgentState):
     }
 
 
-class Score_Agent(BaseModel):
-    """
-    Agent 1: Parse Idea from user input into structured format.
-    This is the state of the model that holds the parsed idea details throughout the process.
-    """
-    novelty_score: int
-    feasibility_score: int
-    impact_score: int
-    summary: str
-    recommendation: str
+
 
 
 def scoring_node(state: AgentState):

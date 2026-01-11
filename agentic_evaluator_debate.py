@@ -1,21 +1,14 @@
-from typing import List, Dict, TypedDict, Annotated
 from langgraph.graph import StateGraph, END, START
-from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
+from langchain_core.messages import HumanMessage, AIMessage
 from papers_retrieval import getReferencePaper
-import operator
 
 from prompts import *
 from tools import get_model
+from models import *
 
 llm = get_model()
 
-# Define the State
-class GANState(TypedDict):
-    research_idea: str
-    retrieved_papers: str
-    messages: Annotated[List[BaseMessage], operator.add]
-    iteration: int
-    max_iterations: int
+
 
 
 # --- Node Functions ---
@@ -94,7 +87,7 @@ def scoring_node(state: GANState):
             findings = state['messages'][-1].content
         ))]
     
-    response = llm.invoke(messages)
+    response = llm.with_structured_output(Score_Agent).invoke(messages)
     
     return {"scores": response}
 
