@@ -14,7 +14,6 @@ from prompts import *
 llm = get_model()
 
 
-# Define agent nodes
 def planning_node(state: AgentState):
     """Agent creates investigation plan"""
     messages = [
@@ -24,7 +23,6 @@ def planning_node(state: AgentState):
     ]
     
     plan_response = llm.invoke(messages)
-    
     return {
         "plan": plan_response.content,
         "next_action": "investigate"
@@ -184,7 +182,7 @@ def run_workflow(research_idea_text: str, papers_json: str):
     # Run the agent
     # try:
     result = agentic_app.invoke({
-        "proposal": research_idea_text,
+        "research_idea": research_idea_text,
         "retrieved_papers": retrieved_papers_text,
         "plan": "",
         "findings": [],

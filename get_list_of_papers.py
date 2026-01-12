@@ -383,18 +383,7 @@ def call_workflow(research_problem):
     result_llm = graph.invoke(
         {"messages": [HumanMessage(content=research_problem)]}
     )
-        # { 
-        #  "messages": [{
-        #      "role": "user",
-        #         "content":"""Dynamic Prompt Adaptation:
-        #             Problem: Large Language Models (LLMs) often struggle with maintaining coherence over extended interactions or creative tasks, leading to thematic inconsistencies and reduced reader engagement.
-        #             Existing Methods: Current methods often use fixed prompts or few-shot examples, which may not adapt to the evolving context of a conversation or creative narrative. Techniques such as Chain-of-Thought prompting are utilized, but they do not inherently address continuity and adaptability across interactions.
-        #             Motivation: Human creative writing often involves iterative dialogue and adaptation to the flow of discussion. The style and context of interactions can shift dynamically based on prior exchanges. Dynamic adaptation mirrors how authors and conversationalists adjust based on audience feedback and shifting themes.
-        #             Proposed Method: We propose Dynamic Prompt Adaptation, involving three phases: (1) Contextual Analysis - Analyze previous outputs and user prompts to extract key themes and tonal shifts, applying a prompting structure like 'Reflect on the previous topic of [theme] and build on it.' (2) Adaptive Prompt Generation - Using insights from the analysis, generate updated prompts that introduce new elements or clarify past responses, e.g., 'Continuing from your last thought on [theme], can you expand on how this might be represented in [new context]?' (3) Iterative Context Update - As the dialogue progresses, generate a synthesis of all prior interactions to maintain thematic coherence, prompting with 'Summarize the key points discussed so far to keep track of our narrative.'
-        #             Experiment Plan: Test against static prompting strategies by evaluating engagement scores, coherence assessments, and user satisfaction in storytelling scenarios using standard text generation metrics such as BLEU and ROUGE. Incorporate user feedback on naturalness and adaptability during the interaction. Datasets could include the 'Story Cloze Test' dataset and user-generated dialogue interactions scraped from platforms like Reddit to assess conversational engagement."""
-        #  }]
-        # }
-    # )
+
     return result_llm
 
 def main():

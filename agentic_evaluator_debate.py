@@ -8,63 +8,42 @@ from models import *
 
 llm = get_model()
 
-
-
-
-# --- Node Functions ---
-
 def advocate_node(state: GANState):
-    # Format history
     history = "\n".join([f"{m.type}: {m.content}" for m in state['messages']])
-    # get_argument_advocate_prompt
-    
     messages = [
         HumanMessage(content=get_argument_advocate_prompt(
             research_idea = state['research_idea'],
             retrieved_papers = state['retrieved_papers'],
             history = history
-        )
-        )
-    ]
-    
+        ))
+    ]       
     response = llm.invoke(messages)
-    
     return {"messages": [AIMessage(content=f"Advocate: {response.content}")]}
 
 def skeptic_node(state: GANState):
-    # Format history
     history = "\n".join([f"{m.type}: {m.content}" for m in state['messages']])
-    
     messages = [
         HumanMessage(content=get_argument_skeptic_prompt(
             research_idea = state['research_idea'],
             retrieved_papers = state['retrieved_papers'],
             history = history
-        )
-        )
+        ))
     ]
-    
     response = llm.invoke(messages)
-    
     return {"messages": [AIMessage(content=f"Skeptic: {response.content}")]}
 
 def moderator_node(state: GANState):
-
-    
-    # Format history
     history = "\n".join([f"{m.type}: {m.content}" for m in state['messages']])
-    
     messages = [HumanMessage(content = get_argument_moderator_prompt(
                 research_idea= state['research_idea'],
                 retrieved_papers= state['retrieved_papers'],
                 history=history,
                 iteration= state['iteration'],
-                max_iterations= state['max_iterations'])       
-                             )      
+                max_iterations= state['max_iterations']
+                ))   
                 ]
-    
+
     response = llm.invoke(messages)
-    
     return {
         "messages": [AIMessage(content=f"Moderator: {response.content}")],
         "iteration": state["iteration"] + 1
@@ -81,14 +60,12 @@ def should_continue(state: GANState):
     return "advocate"
 
 def scoring_node(state: GANState):
-    
     messages = [
         HumanMessage(content=get_argument_score_prompt(
             findings = state['messages'][-1].content
-        ))]
-    
+        ))
+        ]
     response = llm.with_structured_output(Score_Agent).invoke(messages)
-    
     return {"scores": response}
 
 
@@ -96,7 +73,6 @@ def scoring_node(state: GANState):
 def compile_agentic_workflow():
 
     gan_workflow = StateGraph(GANState)
-
     gan_workflow.add_node("advocate", advocate_node)
     gan_workflow.add_node("skeptic", skeptic_node)
     gan_workflow.add_node("moderator", moderator_node)
@@ -116,7 +92,6 @@ def compile_agentic_workflow():
     gan_workflow.add_edge("scoring",END)
 
     gan_app = gan_workflow.compile()
-    
     return gan_app
 
 def run_workflow(research_idea_text: str, papers_json: str):
@@ -128,28 +103,15 @@ def run_workflow(research_idea_text: str, papers_json: str):
     print("Running ReAct Agent Evaluation with Pre-Retrieved Papers...")
     print(f"Number of retrieved papers: {len(retrieved_papers_text.split('Paper ID:'))-1}")
 
-
     result = agentic_app.invoke({
         "research_idea": research_idea_text,
         "retrieved_papers": retrieved_papers_text,
         "messages": [],
+        "scores": {},
         "iteration": 0,
         "max_iterations":3
     })
     
-    
     return result
-        
 
-# # --- Execution Helper ---
-# def run_gan_debate(research_idea, retrieved_papers, max_iter=3):
-#     initial_state = {
-#         "research_idea": research_idea,
-#         "retrieved_papers": retrieved_papers,
-#         "messages": [],
-#         "iteration": 1,
-#         "max_iterations": max_iter
-#     }
     
-#     final_state = gan_app.invoke(initial_state)
-#     return final_state

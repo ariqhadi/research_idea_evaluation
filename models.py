@@ -11,7 +11,7 @@ from langchain_core.messages import BaseMessage
 
 # Define the agent state
 class AgentState(TypedDict):
-    proposal: str
+    research_idea: str
     retrieved_papers: str  # Pre-retrieved papers from earlier pipeline
     plan: str
     findings: Annotated[list, operator.add]
@@ -41,5 +41,6 @@ class GANState(TypedDict):
     research_idea: str
     retrieved_papers: str
     messages: Annotated[List[BaseMessage], operator.add]
+    scores: dict
     iteration: int
     max_iterations: int
