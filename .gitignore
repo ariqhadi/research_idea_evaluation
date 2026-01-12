@@ -9,4 +9,4 @@ venv/
 env/
 ENV/
 
-.streamlit:secrets.toml
+.streamlit/secrets.toml
