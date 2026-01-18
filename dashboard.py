@@ -142,6 +142,7 @@ def idea_generation_loading():
     client = gspread.authorize(creds)
     sh = client.open('TestingLog').worksheet('Sheet1')  
     row = [time.strftime("%Y-%m-%d %H:%M:%S"),
+           st.session_state.research_topic,
            first_idea["Problem"], 
            first_idea["Existing Methods"], 
            first_idea["Motivation"], 
