@@ -136,8 +136,6 @@ def idea_generation_loading():
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
     creds_dict = dict(st.secrets["connections"]["gsheets"])
-    # Remove the spreadsheet URL as it's not part of credentials
-    creds_dict.pop("spreadsheet", None)
     
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         
