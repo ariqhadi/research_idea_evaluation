@@ -122,22 +122,26 @@ name = "evaluation-agents"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "gspread" },
     { name = "langchain" },
     { name = "langchain-core" },
     { name = "langchain-google-genai" },
     { name = "langchain-openai" },
     { name = "langgraph" },
+    { name = "oauth2client" },
     { name = "python-dotenv" },
     { name = "semanticscholar" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "gspread", specifier = ">=6.2.1" },
     { name = "langchain", specifier = ">=1.1.0,<2.0.0" },
     { name = "langchain-core", specifier = ">=1.1.0,<2.0.0" },
     { name = "langchain-google-genai" },
     { name = "langchain-openai", specifier = ">=1.1.0,<2.0.0" },
     { name = "langgraph", specifier = ">=1.0.3,<2.0.0" },
+    { name = "oauth2client", specifier = ">=4.1.3" },
     { name = "python-dotenv" },
     { name = "semanticscholar", specifier = ">=0.11.0,<0.12.0" },
 ]
@@ -171,6 +175,19 @@ requests = [
 ]
 
 [[package]]
+name = "google-auth-oauthlib"
+version = "1.2.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "google-auth" },
+    { name = "requests-oauthlib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fb/87/e10bf24f7bcffc1421b84d6f9c3377c30ec305d082cd737ddaa6d8f77f7c/google_auth_oauthlib-1.2.2.tar.gz", hash = "sha256:11046fb8d3348b296302dd939ace8af0a724042e8029c1b872d87fabc9f41684", size = 20955, upload-time = "2025-04-22T16:40:29.172Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ac/84/40ee070be95771acd2f4418981edb834979424565c3eec3cd88b6aa09d24/google_auth_oauthlib-1.2.2-py3-none-any.whl", hash = "sha256:fd619506f4b3908b5df17b65f39ca8d66ea56986e5472eb5978fd8f3786f00a2", size = 19072, upload-time = "2025-04-22T16:40:28.174Z" },
+]
+
+[[package]]
 name = "google-genai"
 version = "1.55.0"
 source = { registry = "https://pypi.org/simple" }
@@ -189,6 +206,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/1d/7c/19b59750592702305ae211905985ec8ab56f34270af4a159fba5f0214846/google_genai-1.55.0.tar.gz", hash = "sha256:ae9f1318fedb05c7c1b671a4148724751201e8908a87568364a309804064d986", size = 477615, upload-time = "2025-12-11T02:49:28.624Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3e/86/a5a8e32b2d40b30b5fb20e7b8113fafd1e38befa4d1801abd5ce6991065a/google_genai-1.55.0-py3-none-any.whl", hash = "sha256:98c422762b5ff6e16b8d9a1e4938e8e0ad910392a5422e47f5301498d7f373a1", size = 703389, upload-time = "2025-12-11T02:49:27.105Z" },
+]
+
+[[package]]
+name = "gspread"
+version = "6.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "google-auth" },
+    { name = "google-auth-oauthlib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/91/83/42d1d813822ed016d77aabadc99b09de3b5bd68532fd6bae23fd62347c41/gspread-6.2.1.tar.gz", hash = "sha256:2c7c99f7c32ebea6ec0d36f2d5cbe8a2be5e8f2a48bde87ad1ea203eff32bd03", size = 82590, upload-time = "2025-05-14T15:56:25.254Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/27/76/563fb20dedd0e12794d9a12cfe0198458cc0501fdc7b034eee2166d035d5/gspread-6.2.1-py3-none-any.whl", hash = "sha256:6d4ec9f1c23ae3c704a9219026dac01f2b328ac70b96f1495055d453c4c184db", size = 59977, upload-time = "2025-05-14T15:56:24.014Z" },
 ]
 
 [[package]]
@@ -211,6 +241,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/06/94/82699a10bca87a5556c9c59b5963f2d039dbd239f25bc2a63907a05a14cb/httpcore-1.0.9.tar.gz", hash = "sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8", size = 85484, upload-time = "2025-04-24T22:06:22.219Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl", hash = "sha256:2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55", size = 78784, upload-time = "2025-04-24T22:06:20.566Z" },
+]
+
+[[package]]
+name = "httplib2"
+version = "0.31.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyparsing" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/77/df/6eb1d485a513776bbdbb1c919b72e59b5acc51c5e7ef28ad1cd444e252a3/httplib2-0.31.1.tar.gz", hash = "sha256:21591655ac54953624c6ab8d587c71675e379e31e2cfe3147c83c11e9ef41f92", size = 250746, upload-time = "2026-01-13T12:14:14.365Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f0/d8/1b05076441c2f01e4b64f59e5255edc2f0384a711b6d618845c023dc269b/httplib2-0.31.1-py3-none-any.whl", hash = "sha256:d520d22fa7e50c746a7ed856bac298c4300105d01bc2d8c2580a9b57fb9ed617", size = 91101, upload-time = "2026-01-13T12:14:12.676Z" },
 ]
 
 [[package]]
@@ -473,6 +515,31 @@ wheels = [
 ]
 
 [[package]]
+name = "oauth2client"
+version = "4.1.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httplib2" },
+    { name = "pyasn1" },
+    { name = "pyasn1-modules" },
+    { name = "rsa" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a6/7b/17244b1083e8e604bf154cf9b716aecd6388acd656dd01893d0d244c94d9/oauth2client-4.1.3.tar.gz", hash = "sha256:d486741e451287f69568a4d26d70d9acd73a2bbfa275746c535b4209891cccc6", size = 155910, upload-time = "2018-09-07T21:38:18.036Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/95/a9/4f25a14d23f0786b64875b91784607c2277eff25d48f915e39ff0cff505a/oauth2client-4.1.3-py2.py3-none-any.whl", hash = "sha256:b8a81cc5d60e2d364f0b1b98f958dbd472887acaf1a5b05e21c28c31a2d6d3ac", size = 98206, upload-time = "2018-09-07T21:38:16.742Z" },
+]
+
+[[package]]
+name = "oauthlib"
+version = "3.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/5f/19930f824ffeb0ad4372da4812c50edbd1434f678c90c2733e1188edfc63/oauthlib-3.3.1.tar.gz", hash = "sha256:0f0f8aa759826a193cf66c12ea1af1637f87b9b4622d46e866952bb022e538c9", size = 185918, upload-time = "2025-06-19T22:48:08.269Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/be/9c/92789c596b8df838baa98fa71844d84283302f7604ed565dafe5a6b5041a/oauthlib-3.3.1-py3-none-any.whl", hash = "sha256:88119c938d2b8fb88561af5f6ee0eec8cc8d552b7bb1f712743136eb7523b7a1", size = 160065, upload-time = "2025-06-19T22:48:06.508Z" },
+]
+
+[[package]]
 name = "openai"
 version = "2.11.0"
 source = { registry = "https://pypi.org/simple" }
@@ -699,6 +766,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pyparsing"
+version = "3.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/33/c1/1d9de9aeaa1b89b0186e5fe23294ff6517fce1bc69149185577cd31016b2/pyparsing-3.3.1.tar.gz", hash = "sha256:47fad0f17ac1e2cad3de3b458570fbc9b03560aa029ed5e16ee5554da9a2251c", size = 1550512, upload-time = "2025-12-23T03:14:04.391Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8b/40/2614036cdd416452f5bf98ec037f38a1afb17f327cb8e6b652d4729e0af8/pyparsing-3.3.1-py3-none-any.whl", hash = "sha256:023b5e7e5520ad96642e2c6db4cb683d3970bd640cdf7115049a6e9c3682df82", size = 121793, upload-time = "2025-12-23T03:14:02.103Z" },
+]
+
+[[package]]
 name = "python-dotenv"
 version = "1.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -847,6 +923,19 @@ wheels = [
 ]
 
 [[package]]
+name = "requests-oauthlib"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "oauthlib" },
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/42/f2/05f29bc3913aea15eb670be136045bf5c5bbf4b99ecb839da9b422bb2c85/requests-oauthlib-2.0.0.tar.gz", hash = "sha256:b3dffaebd884d8cd778494369603a9e7b58d29111bf6b41bdc2dcd87203af4e9", size = 55650, upload-time = "2024-03-22T20:32:29.939Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl", hash = "sha256:7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36", size = 24179, upload-time = "2024-03-22T20:32:28.055Z" },
+]
+
+[[package]]
 name = "requests-toolbelt"
 version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -882,6 +971,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8a/5c/18302aad8f094b3e4b8bb79ee82dd0fafceee7811f9844c41f393f8a0e5f/semanticscholar-0.11.0.tar.gz", hash = "sha256:91e1233aedbf8e290daf8556fc7a3a6a6db78fe833adee88fd99ddb0a07a0c17", size = 28283, upload-time = "2025-09-14T01:14:51.832Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/af/0627cf6bb64054d03a1fe8e9b0e659b496794000c30ba4fb921ca8aef20a/semanticscholar-0.11.0-py3-none-any.whl", hash = "sha256:824b7c3d11237ec829a211480ed1ed05f4ee9dfdf03e226b04c3d2051ea19b6e", size = 26048, upload-time = "2025-09-14T01:14:50.575Z" },
+]
+
+[[package]]
+name = "six"
+version = "1.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
 ]
 
 [[package]]
