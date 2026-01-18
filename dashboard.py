@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
-import subprocess, time, json
+import subprocess, time, json, gspread
 
 from get_list_of_papers import call_workflow
 from agentic_evaluator_linear import run_workflow as run_agentic_evaluator
 from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debate
+from oauth2client.service_account import ServiceAccountCredentials
 
 
 st.header("Research Idea Generator and Evaluator", divider= True)
@@ -131,6 +132,26 @@ def idea_generation_loading():
     # st.write(result)
     step2.success("✅ Ideas Evaluated")
     
+    
+    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+
+    creds_dict = dict(st.secrets["connections"]["gsheets"])
+    # Remove the spreadsheet URL as it's not part of credentials
+    creds_dict.pop("spreadsheet", None)
+    
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+        
+    client = gspread.authorize(creds)
+    sh = client.open('TestingLog').worksheet('Sheet1')  
+    row = [time.strftime("%Y-%m-%d %H:%M:%S"),
+           first_idea["Problem"], 
+           first_idea["Existing Methods"], 
+           first_idea["Motivation"], 
+           first_idea["Proposed Method"], 
+           first_idea["Experiment Plan"], 
+           agentic_result["recommendation"], 
+           agentic_result["summary"]]
+    sh.append_row(row)
 
 
     
