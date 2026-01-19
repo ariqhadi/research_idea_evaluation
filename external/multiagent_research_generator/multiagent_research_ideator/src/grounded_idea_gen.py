@@ -126,10 +126,10 @@ def propose_ideas(
     #    prompt += "You should make each idea standalone and not dependent on the other ideas.\n"
     if method == "prompting":
         prompt += "Focus on novel prompting ideas for now. The proposed method section should specify how to construct the prompts for all steps involved. Try to avoid large-scale pretraining experiments or human studies.\n"
-    # elif method == "finetuning":
-    #    prompt += "Focus on novel finetuning ideas for now. The proposed method section should specify how to get the finetuning data and what's the training objective.\n"
-    # else:
-    #    prompt += "Focus on proposing novel empirical methods, which can include prompting, finetuning, inference-time interventions, etc. The proposed method section should specify all the details involved, such as how to get the data, what's the training objective, how to construct the prompts, etc.\n"
+    elif method == "finetuning":
+       prompt += "Focus on novel finetuning ideas for now. The proposed method section should specify how to get the finetuning data and what's the training objective.\n"
+    else:
+       prompt += "Focus on proposing novel empirical methods, which can include prompting, finetuning, inference-time interventions, etc. The proposed method section should specify all the details involved, such as how to get the data, what's the training objective, how to construct the prompts, etc.\n"
     if existing_ideas:
         prompt += (
             "You should avoid repeating the following existing ideas and try to be different and diverse: "

@@ -26,7 +26,7 @@ topic_descriptions=(
 
 discussion_types=(
     #"single"
-    "baseline"
+    # "baseline"
     "diff_personas_proposer_reviser"
     #"diff_personas_critic"
     #"parallel_self_critique-2"
@@ -49,7 +49,7 @@ cd "$REPO_ROOT" || exit 1
 ###########################################################
 
 ideas_n=1
-method="prompting"
+method="empirical"  # options: prompting, finetuning, empirical
 rag_value="True"
 
 # cache dir ( "logs/log_yyyy_mm_dd/")
@@ -214,26 +214,26 @@ wait
 
 # Proposal Generation
 
-# for topic in "${topic_names[@]}"; do    
-for discussion_type in "${discussion_types[@]}"; do
-    # Limit concurrent jobs - improved job control
-    while (( $(jobs -r | wc -l) >= MAX_PARALLEL_JOBS )); do
-        wait -n 2>/dev/null || sleep 1
-    done
+# # for topic in "${topic_names[@]}"; do    
+# for discussion_type in "${discussion_types[@]}"; do
+#     # Limit concurrent jobs - improved job control
+#     while (( $(jobs -r | wc -l) >= MAX_PARALLEL_JOBS )); do
+#         wait -n 2>/dev/null || sleep 1
+#     done
 
-    # delete all files in the cache_dir
-    rm -rf "${project_proposal_cache_dir}/${topic}_${discussion_type}/*"
+#     # delete all files in the cache_dir
+#     rm -rf "${project_proposal_cache_dir}/${topic}_${discussion_type}/*"
     
-    echo "Running experiment_plan_gen.py with cache_name: $discussion_type"
-    uv run multiagent_research_ideator/src/experiment_plan_gen.py \
-        --engine $llm_engine \
-        --idea_dedup_cache_dir "${idea_dedup_cache_dir}" \
-        --cache_name "${topic}_${discussion_type}" \
-        --experiment_plan_cache_dir "${project_proposal_cache_dir}" \
-        --idea_name "all" \
-        --seed $seed \
-        --method "prompting" &
-done
+#     echo "Running experiment_plan_gen.py with cache_name: $discussion_type"
+#     uv run multiagent_research_ideator/src/experiment_plan_gen.py \
+#         --engine $llm_engine \
+#         --idea_dedup_cache_dir "${idea_dedup_cache_dir}" \
+#         --cache_name "${topic}_${discussion_type}" \
+#         --experiment_plan_cache_dir "${project_proposal_cache_dir}" \
+#         --idea_name "all" \
+#         --seed $seed \
+#         --method "prompting" &
 # done
+# # done
 
-wait
+# wait
