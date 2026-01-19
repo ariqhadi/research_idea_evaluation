@@ -23,7 +23,7 @@ with st.form("topic_form"):
 
 
 def idea_generation_loading():
-    
+    time_start = time.time()
     # Run the paper retrieval for idea generation process
     
     status_container = st.container()
@@ -42,6 +42,7 @@ def idea_generation_loading():
     with open(lit_rev_path, "r", encoding="utf-8") as f:
         lit_rev = json.load(f)
 
+    st.subheader("Time for paper retrieval: {:.2f} seconds".format(time.time() - time_start))
     
     relevant_papers = pd.DataFrame(lit_rev["paper_bank"])
     with st.expander(f"Retrieved Papers for Idea Generation", expanded=False):
@@ -49,13 +50,13 @@ def idea_generation_loading():
     
 
     # time.sleep(2)  # Simulate a delay for paper retrieval
-    
+    time_start = time.time()
     idea_gen_path = "external/multiagent_research_generator/scripts/generate_ideas_and_dedup.sh"
     cmd = ["bash", str(idea_gen_path), st.session_state.research_topic]
     subprocess.run(cmd, text=True, capture_output=True, check=False)
     
     idea_generated = f"external/multiagent_research_generator/logs/log_2025_07_07/ideas_dedup/{st.session_state.research_topic}_diff_personas_proposer_reviser.json"
-    
+    st.subheader("Time for idea generation: {:.2f} seconds".format(time.time() - time_start))
     # idea_generated = "/Users/ariq/Public/Data/Thesis/Program/Evaluation_agents/external/multiagent_research_generator/logs/log_2025_07_07/ideas_dedup/novel prompting methods to reduce social biases and stereotypes of large language models_diff_personas_proposer_reviser.json"
     
     with open(idea_generated, "r", encoding="utf-8") as f:
@@ -89,11 +90,15 @@ def idea_generation_loading():
     
     research_idea = "Generated Research Idea: " + str(first_key) + "\n\n" + str(first_idea)
     
+    time_start = time.time()
+    
     list_of_papers = call_workflow(research_idea)
     list_of_papers = json.loads(list_of_papers["messages"][-1].content)
     
     st.subheader("Papers Retrieved:")   
-            
+    
+    st.subheader("Time for paper retrieval for evaluation: {:.2f} seconds".format(time.time() - time_start))
+    
     all_papers = []
     for query, payload in list_of_papers.items():
         papers = payload.get("data", [])
@@ -110,9 +115,10 @@ def idea_generation_loading():
     with st.expander(f"Retrieved Papers for Idea Evaluation", expanded=False):
         cols = [c for c in ["query_term", "title","year","citationCount","abstract"] if c in df.columns]
         st.dataframe(df[cols] if cols else df, use_container_width=True)
-    
+    time_start = time.time()
     
     agentic_result =run_agentic_evaluator_debate(research_idea, list_of_papers)
+    st.subheader("Time for idea evaluation: {:.2f} seconds".format(time.time() - time_start))
     
     st.subheader("Agentic Evaluator Result:")
     # try :
