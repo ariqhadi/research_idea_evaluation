@@ -8,68 +8,6 @@ from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debat
 from oauth2client.service_account import ServiceAccountCredentials
 
 
-st.header("Research Idea Generator and Evaluator", divider= True)
-
-##########################################
-# USER INPUT FORM
-##########################################
-
-# Initialize session state
-if 'form_submitted' not in st.session_state:
-    st.session_state.form_submitted = False
-if 'saved_data' not in st.session_state:
-    st.session_state.saved_data = {}
-    
-if st.session_state.form_submitted:
-    st.success("✅ Form submitted successfully!")
-    with st.expander(f"📋 Research Topic: {st.session_state.saved_data.get('research_topic')}", expanded=False):
-        st.write(f"**Name:** {st.session_state.saved_data.get('name')}")
-        st.write(f"**Research Domain:** {st.session_state.saved_data.get('research_domain')}")
-        st.write(f"**Academic Position:** {st.session_state.saved_data.get('academic_position')}")
-        st.write(f"**Research Topic:** {st.session_state.saved_data.get('research_topic')}")
-        st.write(f"**Ideas Scope:** {st.session_state.saved_data.get('ideas_scope', 'Not provided')}")
-    idea_generation_loading()
-else:
-    col1, col2, col3 = st.columns(3)
-
-    with st.form("identity_form"):
-        with col1:
-            name = st.text_input("Name:")
-        with col2:
-            research_domain = st.text_input("Research Domain:")
-        with col3:
-            academic_position = st.text_input("Academic Position:")
-            
-        research_topic = st.text_area(
-            "**Research Topic:**",
-            placeholder="Example: Novel prompting methods to reduce social biases and stereotypes of large language models"
-        )
-        st.markdown("### **Please describe the scope of research ideas you are interested in (optional):**")
-        ideas_scope = st.text_area(
-            label="Research Ideas Scope",
-            label_visibility="collapsed",
-            placeholder="E.g., focusing on NLP applications in healthcare, education, etc."
-        )
-        submit_button = st.form_submit_button("Submit")
-        
-    if submit_button:
-        errors = []
-        if not name.strip() or not research_domain.strip() or not academic_position.strip() or not research_topic.strip():
-            st.error(f"❌ Please fill all the required fields.")
-        else:
-            st.session_state.saved_data = {
-                'name': name,
-                'research_domain': research_domain,
-                'academic_position': academic_position,
-                'research_topic': research_topic,
-                'ideas_scope': ideas_scope
-            }
-            st.session_state.form_submitted = True
-            st.rerun()
-            
-##################################
-# END OF USER INPUT FORM
-##################################
 
 def idea_generation_loading():
     time_start = time.time()
@@ -208,18 +146,64 @@ def idea_generation_loading():
     sh.append_row(row)
 
 
-    # Show expander if form was submitted
-# if st.session_state.form_submitted:
-#     st.success("✅ Form submitted successfully!")
-#     with st.expander(f"📋 Research Topic: {st.session_state.saved_data.get('research_topic')}", expanded=False):
-#         st.write(f"**Name:** {st.session_state.saved_data.get('name')}")
-#         st.write(f"**Research Domain:** {st.session_state.saved_data.get('research_domain')}")
-#         st.write(f"**Academic Position:** {st.session_state.saved_data.get('academic_position')}")
-#         st.write(f"**Research Topic:** {st.session_state.saved_data.get('research_topic')}")
-#         st.write(f"**Ideas Scope:** {st.session_state.saved_data.get('ideas_scope', 'Not provided')}")
-#     idea_generation_loading()
 
-# if run_clicked:
-    # st.subheader("Your research topic is: " + "\n\n" + st.session_state.research_topic)
+st.header("Research Idea Generator and Evaluator", divider= True)
+
+##########################################
+# USER INPUT FORM
+##########################################
+
+# Initialize session state
+if 'form_submitted' not in st.session_state:
+    st.session_state.form_submitted = False
+if 'saved_data' not in st.session_state:
+    st.session_state.saved_data = {}
     
-    # multi_stage_loading()
+if st.session_state.form_submitted:
+    st.success("✅ Form submitted successfully!")
+    with st.expander(f"📋 Research Topic: {st.session_state.saved_data.get('research_topic')}", expanded=False):
+        st.write(f"**Name:** {st.session_state.saved_data.get('name')}")
+        st.write(f"**Research Domain:** {st.session_state.saved_data.get('research_domain')}")
+        st.write(f"**Academic Position:** {st.session_state.saved_data.get('academic_position')}")
+        st.write(f"**Research Topic:** {st.session_state.saved_data.get('research_topic')}")
+        st.write(f"**Ideas Scope:** {st.session_state.saved_data.get('ideas_scope', 'Not provided')}")
+    idea_generation_loading(st.session_state.saved_data)
+else:
+    col1, col2, col3 = st.columns(3)
+
+    with st.form("identity_form"):
+        with col1:
+            name = st.text_input("Name:")
+        with col2:
+            research_domain = st.text_input("Research Domain:")
+        with col3:
+            academic_position = st.text_input("Academic Position:")
+            
+        research_topic = st.text_area(
+            "**Research Topic:**",
+            placeholder="Example: Novel prompting methods to reduce social biases and stereotypes of large language models"
+        )
+        st.markdown("### **Please describe the scope of research ideas you are interested in (optional):**")
+        ideas_scope = st.text_area(
+            label="Research Ideas Scope",
+            label_visibility="collapsed",
+            placeholder="E.g., focusing on NLP applications in healthcare, education, etc."
+        )
+        submit_button = st.form_submit_button("Submit")
+        
+    if submit_button:
+        errors = []
+        if not name.strip() or not research_domain.strip() or not academic_position.strip() or not research_topic.strip():
+            st.error(f"❌ Please fill all the required fields.")
+        else:
+            st.session_state.name = name
+            st.session_state.research_domain = research_domain
+            st.session_state.academic_position = academic_position
+            st.session_state.research_topic = research_topic
+            st.session_state.ideas_scope = ideas_scope
+            st.session_state.form_submitted = True
+            st.rerun()
+            
+##################################
+# END OF USER INPUT FORM
+##################################
