@@ -19,8 +19,16 @@ if 'form_submitted' not in st.session_state:
     st.session_state.form_submitted = False
 if 'saved_data' not in st.session_state:
     st.session_state.saved_data = {}
-
-
+    
+if st.session_state.form_submitted:
+    st.success("✅ Form submitted successfully!")
+    with st.expander(f"📋 Research Topic: {st.session_state.saved_data.get('research_topic')}", expanded=False):
+        st.write(f"**Name:** {st.session_state.saved_data.get('name')}")
+        st.write(f"**Research Domain:** {st.session_state.saved_data.get('research_domain')}")
+        st.write(f"**Academic Position:** {st.session_state.saved_data.get('academic_position')}")
+        st.write(f"**Research Topic:** {st.session_state.saved_data.get('research_topic')}")
+        st.write(f"**Ideas Scope:** {st.session_state.saved_data.get('ideas_scope', 'Not provided')}")
+    idea_generation_loading()
 else:
     col1, col2, col3 = st.columns(3)
 
@@ -201,15 +209,15 @@ def idea_generation_loading():
 
 
     # Show expander if form was submitted
-if st.session_state.form_submitted:
-    st.success("✅ Form submitted successfully!")
-    with st.expander(f"📋 Research Topic: {st.session_state.saved_data.get('research_topic')}", expanded=False):
-        st.write(f"**Name:** {st.session_state.saved_data.get('name')}")
-        st.write(f"**Research Domain:** {st.session_state.saved_data.get('research_domain')}")
-        st.write(f"**Academic Position:** {st.session_state.saved_data.get('academic_position')}")
-        st.write(f"**Research Topic:** {st.session_state.saved_data.get('research_topic')}")
-        st.write(f"**Ideas Scope:** {st.session_state.saved_data.get('ideas_scope', 'Not provided')}")
-    idea_generation_loading()
+# if st.session_state.form_submitted:
+#     st.success("✅ Form submitted successfully!")
+#     with st.expander(f"📋 Research Topic: {st.session_state.saved_data.get('research_topic')}", expanded=False):
+#         st.write(f"**Name:** {st.session_state.saved_data.get('name')}")
+#         st.write(f"**Research Domain:** {st.session_state.saved_data.get('research_domain')}")
+#         st.write(f"**Academic Position:** {st.session_state.saved_data.get('academic_position')}")
+#         st.write(f"**Research Topic:** {st.session_state.saved_data.get('research_topic')}")
+#         st.write(f"**Ideas Scope:** {st.session_state.saved_data.get('ideas_scope', 'Not provided')}")
+#     idea_generation_loading()
 
 # if run_clicked:
     # st.subheader("Your research topic is: " + "\n\n" + st.session_state.research_topic)
