@@ -48,7 +48,7 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$REPO_ROOT" || exit 1
 ###########################################################
 
-ideas_n=3
+ideas_n=1
 method="prompting"
 rag_value="True"
 
