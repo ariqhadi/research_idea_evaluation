@@ -70,60 +70,67 @@ def idea_generation_loading():
     st.header("Evaluating Research Idea", divider= True)
     
     
-    # Stage 3
-    with status_container:
-        step2 = st.empty()
-    step2.info("🔄 Idea Evaluation Started... ")
+##########################################
+# IDEA EVALUATION
+##########################################
+
+    # with status_container:
+    #     step2 = st.empty()
+    # step2.info("🔄 Idea Evaluation Started... ")
     
-    research_idea = "Generated Research Idea: " + str(first_key) + "\n\n" + str(first_idea)
+    # research_idea = "Generated Research Idea: " + str(first_key) + "\n\n" + str(first_idea)
     
-    time_start = time.time()
+    # time_start = time.time()
     
-    list_of_papers = call_workflow(research_idea)
-    list_of_papers = json.loads(list_of_papers["messages"][-1].content)
+    # list_of_papers = call_workflow(research_idea)
+    # list_of_papers = json.loads(list_of_papers["messages"][-1].content)
     
-    st.subheader("Papers Retrieved:")   
+    # st.subheader("Papers Retrieved:")   
     
-    st.subheader("Time for paper retrieval for evaluation: {:.2f} seconds".format(time.time() - time_start))
+    # st.subheader("Time for paper retrieval for evaluation: {:.2f} seconds".format(time.time() - time_start))
     
-    all_papers = []
-    for query, payload in list_of_papers.items():
-        papers = payload.get("data", [])
-        for paper in papers:
+    # all_papers = []
+    # for query, payload in list_of_papers.items():
+    #     papers = payload.get("data", [])
+    #     for paper in papers:
             
-            # Add the query term to each paper for reference
-            paper["query_term"] = query
-            all_papers.append(paper)
+    #         # Add the query term to each paper for reference
+    #         paper["query_term"] = query
+    #         all_papers.append(paper)
 
-    if all_papers:
-        df = pd.DataFrame(all_papers)
+    # if all_papers:
+    #     df = pd.DataFrame(all_papers)
         
-    # Keep useful columns
-    with st.expander(f"Retrieved Papers for Idea Evaluation", expanded=False):
-        cols = [c for c in ["query_term", "title","year","citationCount","abstract"] if c in df.columns]
-        st.dataframe(df[cols] if cols else df, use_container_width=True)
-    time_start = time.time()
+    # # Keep useful columns
+    # with st.expander(f"Retrieved Papers for Idea Evaluation", expanded=False):
+    #     cols = [c for c in ["query_term", "title","year","citationCount","abstract"] if c in df.columns]
+    #     st.dataframe(df[cols] if cols else df, use_container_width=True)
+    # time_start = time.time()
     
-    agentic_result =run_agentic_evaluator_debate(research_idea, list_of_papers)
-    st.subheader("Time for idea evaluation: {:.2f} seconds".format(time.time() - time_start))
+    # agentic_result =run_agentic_evaluator_debate(research_idea, list_of_papers)
+    # st.subheader("Time for idea evaluation: {:.2f} seconds".format(time.time() - time_start))
     
-    st.subheader("Agentic Evaluator Result:")
-    # try :
-    #     evaluation_result = json.loads((agentic_result["scores"].content.strip()).replace("```json", "").replace("```", "").strip())
-    # except:
-    #     evaluation_result = json.loads(agentic_result.content)
-    # idea_recommendation = evaluation_result["recommendation"]
-    # idea_summary = evaluation_result["summary"]
-    agentic_result = agentic_result["scores"].model_dump()
-    idea_recommendation = agentic_result["recommendation"]
-    idea_summary = agentic_result["summary"]
+    # st.subheader("Agentic Evaluator Result:")
+    # # try :
+    # #     evaluation_result = json.loads((agentic_result["scores"].content.strip()).replace("```json", "").replace("```", "").strip())
+    # # except:
+    # #     evaluation_result = json.loads(agentic_result.content)
+    # # idea_recommendation = evaluation_result["recommendation"]
+    # # idea_summary = evaluation_result["summary"]
+    # agentic_result = agentic_result["scores"].model_dump()
+    # idea_recommendation = agentic_result["recommendation"]
+    # idea_summary = agentic_result["summary"]
     
-    st.write("Recommended Action: \n\n" + idea_recommendation)
-    st.write("Summary of Evaluation: \n\n" + idea_summary)
+    # st.write("Recommended Action: \n\n" + idea_recommendation)
+    # st.write("Summary of Evaluation: \n\n" + idea_summary)
 
     
-    # st.write(result)
-    step2.success("✅ Ideas Evaluated")
+    # # st.write(result)
+    # step2.success("✅ Ideas Evaluated")
+    
+##########################################
+# IDEA EVALUATION END
+##########################################
     
     
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
@@ -140,9 +147,9 @@ def idea_generation_loading():
            first_idea["Existing Methods"], 
            first_idea["Motivation"], 
            first_idea["Proposed Method"], 
-           first_idea["Experiment Plan"], 
-           agentic_result["recommendation"], 
-           agentic_result["summary"]]
+           first_idea["Experiment Plan"]] 
+        #    agentic_result["recommendation"], 
+        #    agentic_result["summary"]]
     sh.append_row(row)
 
 
@@ -204,6 +211,6 @@ else:
             st.session_state.form_submitted = True
             st.rerun()
             
-##################################
+##########################################
 # END OF USER INPUT FORM
-##################################
+##########################################
