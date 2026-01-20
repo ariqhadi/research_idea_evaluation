@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import subprocess, time, json, gspread
+import concurrent.futures
 
 from get_list_of_papers import call_workflow
 from agentic_evaluator_linear import run_workflow as run_agentic_evaluator
@@ -107,7 +108,46 @@ def idea_generation_loading():
         st.dataframe(df[cols] if cols else df, use_container_width=True)
     time_start = time.time()
     
-    agentic_result =run_agentic_evaluator_debate(research_idea, list_of_papers)
+    # agentic_result =run_agentic_evaluator_debate(research_idea, list_of_papers)
+    
+    #############################################################################33
+    
+    # Create status indicators
+    novelty_status = st.empty()
+    feasibility_status = st.empty()
+    interestingness_status = st.empty()
+
+    novelty_status.info("🔄 Novelty evaluation running...")
+    feasibility_status.info("🔄 Feasibility evaluation running...")
+    interestingness_status.info("🔄 Interestingness evaluation running...")
+
+    status_map = {
+        "novelty": novelty_status,
+        "feasibility": feasibility_status,
+        "interestingness": interestingness_status
+    }
+    
+    # Run in parallel
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        futures = {
+            executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "novelty"): "novelty",
+            executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "feasibility"): "feasibility",
+            executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "interestingness"): "interestingness"
+        }
+    
+    results = {}
+    for future in concurrent.futures.as_completed(futures):
+        metric = futures[future]
+        try:
+            results[metric] = future.result()
+            status_map[metric].success(f"✅ {metric.capitalize()} completed")
+        except Exception as e:
+            status_map[metric].error(f"❌ {metric.capitalize()} failed: {e}")
+            results[metric] = None
+
+    #############################################################################
+    
+        
     st.subheader("Time for idea evaluation: {:.2f} seconds".format(time.time() - time_start))
     
     st.subheader("Agentic Evaluator Result:")
