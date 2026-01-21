@@ -14,10 +14,17 @@ def idea_generation_loading():
     time_start = time.time()
     # Run the paper retrieval for idea generation process
     
+    original_idea = st.session_state.research_topic
+    scoped_idea = original_idea + " with scope: " + st.session_state.ideas_scope if st.session_state.ideas_scope else original_idea
+    
     status_container = st.container()
     
     with status_container:
         step1 = st.empty()
+    
+    #################################
+    # PAPER RETRIEVAL
+    #################################
     
     # Retrieving Papers 
     step1.info("🔄 Generating Research Idea...")
@@ -36,35 +43,88 @@ def idea_generation_loading():
     with st.expander(f"Retrieved Papers for Idea Generation", expanded=False):
         relevant_papers[["title","year","citationCount","abstract"]]
     
-
-    # time.sleep(2)  # Simulate a delay for paper retrieval
-    time_start = time.time()
-    idea_gen_path = "external/multiagent_research_generator/scripts/generate_ideas_and_dedup.sh"
-    cmd = ["bash", str(idea_gen_path), st.session_state.research_topic]
-    subprocess.run(cmd, text=True, capture_output=True, check=False)
+    #################################
+    # PAPER RETRIEVAL
+    #################################
     
-    idea_generated = f"external/multiagent_research_generator/logs/log_2025_07_07/ideas_dedup/{st.session_state.research_topic}_diff_personas_proposer_reviser.json"
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+    # time.sleep(2)  # Simulate a delay for paper retrieval
+        idea_gen_path = "external/multiagent_research_generator/scripts/generate_ideas_and_dedup.sh"
+        
+        gen_original_idea = executor.submit(
+            subprocess.run,
+            ["bash", str(idea_gen_path), original_idea],
+            text=True,
+            capture_output=True,
+            check=False
+        )
+        
+        gen_scoped_idea = executor.submit(
+            subprocess.run,
+            ["bash", str(idea_gen_path), scoped_idea],
+            text=True,
+            capture_output=True,
+            check=False
+        )   
+        
+        try:
+            gen_original_idea.result()
+            gen_scoped_idea.result()
+        except subprocess.CalledProcessError as e:
+            st.error(f"❌ Error during idea generation: {e}")
+    
+        
+    gen_original_idea = f"external/multiagent_research_generator/logs/log_2025_07_07/ideas_dedup/{original_idea}_diff_personas_proposer_reviser.json"
+    gen_scoped_idea = f"external/multiagent_research_generator/logs/log_2025_07_07/ideas_dedup/{scoped_idea}_diff_personas_proposer_reviser.json"
+    
     st.subheader("Time for idea generation: {:.2f} seconds".format(time.time() - time_start))
     # idea_generated = "/Users/ariq/Public/Data/Thesis/Program/Evaluation_agents/external/multiagent_research_generator/logs/log_2025_07_07/ideas_dedup/novel prompting methods to reduce social biases and stereotypes of large language models_diff_personas_proposer_reviser.json"
     
-    with open(idea_generated, "r", encoding="utf-8") as f:
-        generated_ideas = json.load(f)
-
-    first_key = next(iter(generated_ideas["ideas"]))
-    first_idea = generated_ideas["ideas"][first_key]
+    with open(gen_original_idea, "r", encoding="utf-8") as f:
+        gen_original_idea = json.load(f)
     
-    st.write("Generated Research Idea:" + first_key)
-    st.write("Problem Statement:")
-    st.write(first_idea["Problem"])
-    st.write("Existing Methods:")
-    st.write(first_idea["Existing Methods"])
-    st.write("Motivation:")
-    st.write(first_idea["Motivation"])
-    st.write("Proposed Method:")
-    st.write(first_idea["Proposed Method"])
-    st.write("Experiment Plan:")
-    st.write(first_idea["Experiment Plan"])
-
+    with open(gen_scoped_idea, "r", encoding="utf-8") as f:
+        gen_scoped_idea = json.load(f)
+        
+    # Get first idea from each generation
+    first_key_original = next(iter(gen_original_idea["ideas"]))
+    first_idea_original = gen_original_idea["ideas"][first_key_original]
+    
+    first_key_scoped = next(iter(gen_scoped_idea["ideas"]))
+    first_idea_scoped = gen_scoped_idea["ideas"][first_key_scoped]
+    
+    
+    # Display both ideas side by side
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.subheader("Original Idea")
+        st.write("**Generated Research Idea:** " + first_key_original)
+        st.write("**Problem Statement:**")
+        st.write(first_idea_original["Problem"])
+        st.write("**Existing Methods:**")
+        st.write(first_idea_original["Existing Methods"])
+        st.write("**Motivation:**")
+        st.write(first_idea_original["Motivation"])
+        st.write("**Proposed Method:**")
+        st.write(first_idea_original["Proposed Method"])
+        st.write("**Experiment Plan:**")
+        st.write(first_idea_original["Experiment Plan"])
+    
+    with col2:
+        st.subheader("Scoped Idea")
+        st.write("**Generated Research Idea:** " + first_key_scoped)
+        st.write("**Problem Statement:**")
+        st.write(first_idea_scoped["Problem"])
+        st.write("**Existing Methods:**")
+        st.write(first_idea_scoped["Existing Methods"])
+        st.write("**Motivation:**")
+        st.write(first_idea_scoped["Motivation"])
+        st.write("**Proposed Method:**")
+        st.write(first_idea_scoped["Proposed Method"])
+        st.write("**Experiment Plan:**")
+        st.write(first_idea_scoped["Experiment Plan"])
+    
     
     step1.success("✅ Research Idea Generated")
     
@@ -75,98 +135,98 @@ def idea_generation_loading():
 # IDEA EVALUATION
 ##########################################
 
-    with status_container:
-        step2 = st.empty()
-    step2.info("🔄 Idea Evaluation Started... ")
+    # with status_container:
+    #     step2 = st.empty()
+    # step2.info("🔄 Idea Evaluation Started... ")
     
-    research_idea = "Generated Research Idea: " + str(first_key) + "\n\n" + str(first_idea)
+    # research_idea = "Generated Research Idea: " + str(first_key) + "\n\n" + str(first_idea)
     
-    time_start = time.time()
+    # time_start = time.time()
     
-    list_of_papers = call_workflow(research_idea)
-    list_of_papers = json.loads(list_of_papers["messages"][-1].content)
+    # list_of_papers = call_workflow(research_idea)
+    # list_of_papers = json.loads(list_of_papers["messages"][-1].content)
     
-    st.subheader("Papers Retrieved:")   
+    # st.subheader("Papers Retrieved:")   
     
-    st.subheader("Time for paper retrieval for evaluation: {:.2f} seconds".format(time.time() - time_start))
+    # st.subheader("Time for paper retrieval for evaluation: {:.2f} seconds".format(time.time() - time_start))
     
-    all_papers = []
-    for query, payload in list_of_papers.items():
-        papers = payload.get("data", [])
-        for paper in papers:
+    # all_papers = []
+    # for query, payload in list_of_papers.items():
+    #     papers = payload.get("data", [])
+    #     for paper in papers:
             
-            # Add the query term to each paper for reference
-            paper["query_term"] = query
-            all_papers.append(paper)
+    #         # Add the query term to each paper for reference
+    #         paper["query_term"] = query
+    #         all_papers.append(paper)
 
-    if all_papers:
-        df = pd.DataFrame(all_papers)
+    # if all_papers:
+    #     df = pd.DataFrame(all_papers)
         
-    # Keep useful columns
-    with st.expander(f"Retrieved Papers for Idea Evaluation", expanded=False):
-        cols = [c for c in ["query_term", "title","year","citationCount","abstract"] if c in df.columns]
-        st.dataframe(df[cols] if cols else df, use_container_width=True)
-    time_start = time.time()
+    # # Keep useful columns
+    # with st.expander(f"Retrieved Papers for Idea Evaluation", expanded=False):
+    #     cols = [c for c in ["query_term", "title","year","citationCount","abstract"] if c in df.columns]
+    #     st.dataframe(df[cols] if cols else df, use_container_width=True)
+    # time_start = time.time()
     
-    # agentic_result =run_agentic_evaluator_debate(research_idea, list_of_papers)
+    # # agentic_result =run_agentic_evaluator_debate(research_idea, list_of_papers)
     
-    #############################################################################33
+    # #############################################################################33
     
-    # Create status indicators
-    novelty_status = st.empty()
-    feasibility_status = st.empty()
-    interestingness_status = st.empty()
+    # # Create status indicators
+    # novelty_status = st.empty()
+    # feasibility_status = st.empty()
+    # interestingness_status = st.empty()
 
-    novelty_status.info("🔄 Novelty evaluation running...")
-    feasibility_status.info("🔄 Feasibility evaluation running...")
-    interestingness_status.info("🔄 Interestingness evaluation running...")
+    # novelty_status.info("🔄 Novelty evaluation running...")
+    # feasibility_status.info("🔄 Feasibility evaluation running...")
+    # interestingness_status.info("🔄 Interestingness evaluation running...")
 
-    status_map = {
-        "novelty": novelty_status,
-        "feasibility": feasibility_status,
-        "interestingness": interestingness_status
-    }
+    # status_map = {
+    #     "novelty": novelty_status,
+    #     "feasibility": feasibility_status,
+    #     "interestingness": interestingness_status
+    # }
     
-    # Run in parallel
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-        futures = {
-            executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "novelty"): "novelty",
-            executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "feasibility"): "feasibility",
-            executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "interestingness"): "interestingness"
-        }
+    # # Run in parallel
+    # with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+    #     futures = {
+    #         executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "novelty"): "novelty",
+    #         executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "feasibility"): "feasibility",
+    #         executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "interestingness"): "interestingness"
+    #     }
     
-    results = {}
-    for future in concurrent.futures.as_completed(futures):
-        metric = futures[future]
-        try:
-            results[metric] = future.result()
-            status_map[metric].success(f"✅ {metric.capitalize()} completed")
-        except Exception as e:
-            status_map[metric].error(f"❌ {metric.capitalize()} failed: {e}")
-            results[metric] = None
+    # results = {}
+    # for future in concurrent.futures.as_completed(futures):
+    #     metric = futures[future]
+    #     try:
+    #         results[metric] = future.result()
+    #         status_map[metric].success(f"✅ {metric.capitalize()} completed")
+    #     except Exception as e:
+    #         status_map[metric].error(f"❌ {metric.capitalize()} failed: {e}")
+    #         results[metric] = None
 
-    #############################################################################
+    # #############################################################################
     
         
-    st.subheader("Time for idea evaluation: {:.2f} seconds".format(time.time() - time_start))
+    # st.subheader("Time for idea evaluation: {:.2f} seconds".format(time.time() - time_start))
     
-    st.subheader("Agentic Evaluator Result:")
-    # try :
-    #     evaluation_result = json.loads((agentic_result["scores"].content.strip()).replace("```json", "").replace("```", "").strip())
-    # except:
-    #     evaluation_result = json.loads(agentic_result.content)
-    # idea_recommendation = evaluation_result["recommendation"]
-    # idea_summary = evaluation_result["summary"]
-    agentic_result = agentic_result["scores"].model_dump()
-    idea_recommendation = agentic_result["recommendation"]
-    idea_summary = agentic_result["summary"]
+    # st.subheader("Agentic Evaluator Result:")
+    # # try :
+    # #     evaluation_result = json.loads((agentic_result["scores"].content.strip()).replace("```json", "").replace("```", "").strip())
+    # # except:
+    # #     evaluation_result = json.loads(agentic_result.content)
+    # # idea_recommendation = evaluation_result["recommendation"]
+    # # idea_summary = evaluation_result["summary"]
+    # agentic_result = agentic_result["scores"].model_dump()
+    # idea_recommendation = agentic_result["recommendation"]
+    # idea_summary = agentic_result["summary"]
     
-    st.write("Recommended Action: \n\n" + idea_recommendation)
-    st.write("Summary of Evaluation: \n\n" + idea_summary)
+    # st.write("Recommended Action: \n\n" + idea_recommendation)
+    # st.write("Summary of Evaluation: \n\n" + idea_summary)
 
     
-    # st.write(result)
-    step2.success("✅ Ideas Evaluated")
+    # # st.write(result)
+    # step2.success("✅ Ideas Evaluated")
     
 ##########################################
 # IDEA EVALUATION END
