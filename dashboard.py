@@ -15,7 +15,7 @@ def idea_generation_loading():
     # Run the paper retrieval for idea generation process
     
     original_idea = st.session_state.research_topic
-    scoped_idea = original_idea + ". constrain it with scope: " + st.session_state.ideas_scope if st.session_state.ideas_scope else original_idea
+    scoped_idea = original_idea + "; constrain it with scope " + st.session_state.ideas_scope if st.session_state.ideas_scope else original_idea
     
     status_container = st.container()
     
