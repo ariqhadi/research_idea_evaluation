@@ -1,5 +1,7 @@
 import requests
 import os
+from prompts import get_paper_summarization_prompt
+from tools import get_model
 
 
 class getReferencePaper():
@@ -54,6 +56,11 @@ class getReferencePaper():
         papers_for_llm = "\n\n---\n\n".join(paper_list)
         return papers_for_llm
 
+    
+def summarize_papers(papers_text):
+    llm = get_model()
+    prompt = get_paper_summarization_prompt(papers_text)
+    return llm.invoke(prompt).content
  
 # query = 'Computing Machinery and Intelligence'
 

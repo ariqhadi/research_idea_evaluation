@@ -132,7 +132,26 @@ def layout_one_column(ideas, ideas_data):
             st.divider()
             
             result[f"{key}_{idx}"] = rating
+            
+    result["novelty"] = st.radio(
+                        "Is the research idea novel?",
+                        options=["Yes", "No"],
+                        horizontal=True,
+                        key="binary_novelty"
+                        )
 
+    result["feasibility"] = st.radio(
+                        "Is the research idea feasible?",
+                        options=["Yes", "No"],
+                        horizontal=True,
+                        key="binary_feasibility"
+                        )
+    result["interestingness"] = st.radio(
+                        "Is the research idea interesting?",
+                        options=["Yes", "No"],
+                        horizontal=True,
+                        key="binary_interestingness"
+                        )
 
     if st.button("Submit Ratings", type="primary"):
         st.success("Ratings submitted successfully!")

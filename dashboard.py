@@ -8,6 +8,7 @@ from get_list_of_papers import call_workflow
 from agentic_evaluator_linear import run_workflow as run_agentic_evaluator
 from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debate
 from testing_streamlit import layout_one_column
+from papers_retrieval import summarize_papers
 
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -75,8 +76,12 @@ def idea_generation_loading():
     st.subheader("Time for paper retrieval: {:.2f} seconds".format(time.time() - time_start))
     
     relevant_papers = pd.DataFrame(lit_rev["paper_bank"])
-    with st.expander(f"Retrieved Papers for Idea Generation", expanded=False):
+    lit_rev_summary = summarize_papers(lit_rev["paper_bank"])
+    with st.expander(f"List of Retrieved Papers for Idea Generation", expanded=False):
         relevant_papers[["title","year","citationCount","abstract"]]
+    
+    with st.expander(f"Summary of Retrieved Papers for Idea Generation", expanded=False):
+        st.write(lit_rev_summary)
     
     #################################
     # PAPER RETRIEVAL END
@@ -313,7 +318,7 @@ if 'saved_data' not in st.session_state:
     st.session_state.saved_data = {}
     
 if st.session_state.form_submitted:
-    with st.expander(f"📋 Research Topic: {st.session_state.research_topic}", expanded=False):
+    with st.expander(f"Research Topic: {st.session_state.research_topic}", expanded=False):
         st.success("✅ Form submitted successfully!")
         st.write(f"**Name:** {st.session_state.name}")
         st.write(f"**Research Domain:** {st.session_state.research_domain}")
@@ -349,12 +354,15 @@ if st.session_state.form_submitted:
             ratings["feasibility_1"],
             ratings["feasibility_2"],
             ratings["interestingness_0"],
-            ratings["interestingness_1"]
+            ratings["interestingness_1"],
+            ratings["novelty"],
+            ratings["feasibility"],
+            ratings["interestingness"]
             ]
         gsheets_append_row(final_result)
         st.session_state.ratings_submitted = True
     else:
-        st.info("👆 Please rate the idea above before proceeding")
+        st.info("Please rate the idea above before proceeding")
         
         
 else:

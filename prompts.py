@@ -328,3 +328,14 @@ def get_interestingness_argument_score_prompt(findings: str) -> str:
         
         """
     
+def get_paper_summarization_prompt(lit_rev: str) -> str:
+    return f"""
+        Act as an expert researcher.
+        
+        Here are list of research papers you have found in JSON format:
+
+        {lit_rev}
+
+        Analyze the chronological evolution of the research and summarize key trends in a concise manner but with sufficient detail.
+        the objective is to identify how the research topic has developed over time, noting significant advancements, shifts in focus, and emerging themes.
+        """
