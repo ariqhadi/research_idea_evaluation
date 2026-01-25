@@ -48,7 +48,7 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$REPO_ROOT" || exit 1
 ###########################################################
 
-ideas_n=1
+ideas_n=3
 method="empirical"  # options: prompting, finetuning, empirical
 rag_value="True"
 
@@ -69,6 +69,7 @@ llm_engine="gpt-4o-mini-2024-07-18"
 # Iterate over each topic name 
 # for topic in "${topic_names[@]}"; do
 topic="$1"
+file_name="$2"
 for discussion_type in "${discussion_types[@]}"; do
     for seed in {1..2}; do
         # Limit concurrent jobs - improved job control
@@ -78,8 +79,8 @@ for discussion_type in "${discussion_types[@]}"; do
 
         echo "Running grounded idea generation with seed $seed"
 
-        if [ -f "${seed_ideas_cache_dir}/${topic}_${discussion_type}_seed${seed}.json" ]; then
-            echo "File already exists: ${seed_ideas_cache_dir}/${topic}_${discussion_type}_seed${seed}.json"
+        if [ -f "${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json" ]; then
+            echo "File already exists: ${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json"
             echo "Skipping...\n"
             continue
         fi
@@ -94,7 +95,7 @@ for discussion_type in "${discussion_types[@]}"; do
                 --engine $llm_engine \
                 --max_tokens 16384 \
                 --paper_cache "${cache_dir}/lit_review/$topic.json" \
-                --idea_cache "${seed_ideas_cache_dir}/${topic}_${discussion_type}_seed${seed}.json" \
+                --idea_cache "${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json" \
                 --grounding_k 10 \
                 --method "$method" \
                 --ideas_n $ideas_n \
@@ -110,7 +111,7 @@ for discussion_type in "${discussion_types[@]}"; do
                 --engine $llm_engine \
                 --max_tokens 16384 \
                 --paper_cache "${cache_dir}/lit_review/$topic.json" \
-                --idea_cache "${seed_ideas_cache_dir}/${topic}_${discussion_type}_seed${seed}.json" \
+                --idea_cache "${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json" \
                 --grounding_k 10 \
                 --method "$method" \
                 --ideas_n $ideas_n \
@@ -124,7 +125,7 @@ for discussion_type in "${discussion_types[@]}"; do
                 --engine $llm_engine \
                 --max_tokens 16384 \
                 --paper_cache "${cache_dir}/lit_review/$topic.json" \
-                --idea_cache "${seed_ideas_cache_dir}/${topic}_${discussion_type}_seed${seed}.json" \
+                --idea_cache "${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json" \
                 --grounding_k 10 \
                 --method "$method" \
                 --ideas_n $ideas_n \
@@ -151,11 +152,13 @@ echo "Merging temporary idea files using Python script..."
 
 # for topic in "${topic_names[@]}"; do
 for discussion_type in "${discussion_types[@]}"; do
-    final_cache_file="${seed_ideas_cache_dir}/${topic}_${discussion_type}.json"
-    echo "Running merge script for ${topic} - ${discussion_type}"
+    final_cache_file="${seed_ideas_cache_dir}/${file_name}_${discussion_type}.json"
+    echo "Running merge script for ${file_name} - ${discussion_type}"
     # Call the Python script to merge files for this combination
     # It will find _seed*.json files inside the cache_dir
+    # added --file_name to specify the base file name
     uv run multiagent_research_ideator/src/merge_seed_ideas.py \
+        --file_name "${file_name}" \
         --cache_dir "${seed_ideas_cache_dir}" \
         --topic "${topic}" \
         --discussion_type "${discussion_type}" \
@@ -184,7 +187,7 @@ for discussion_type in "${discussion_types[@]}"; do
     echo "Running analyze_ideas_semantic_similarity.py with cache_name: $discussion_type"
     uv run multiagent_research_ideator/src/analyze_ideas_semantic_similarity.py \
         --cache_dir "$seed_ideas_cache_dir" \
-        --cache_name "${topic}_${discussion_type}" \
+        --cache_name "${file_name}_${discussion_type}" \
         --save_similarity_matrix &
 done
 # done
@@ -201,7 +204,7 @@ for discussion_type in "${discussion_types[@]}"; do
     echo "Running dedup_ideas.py with cache_name: $discussion_type"
     uv run multiagent_research_ideator/src/dedup_ideas.py \
         --cache_dir "$seed_ideas_cache_dir" \
-        --cache_name "${topic}_${discussion_type}" \
+        --cache_name "${file_name}_${discussion_type}" \
         --dedup_cache_dir "${idea_dedup_cache_dir}" \
         --similarity_threshold 0.8 &
 done

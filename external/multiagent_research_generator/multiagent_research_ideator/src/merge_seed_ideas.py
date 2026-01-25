@@ -5,6 +5,7 @@ from pathlib import Path
 
 
 def merge_files(
+    file_name: Path,  # added argument
     cache_dir: Path,
     topic: str,
     discussion_type: str,
@@ -21,7 +22,7 @@ def merge_files(
         output_file: Path to the final merged output JSON file.
         delete_temp_files: Whether to delete the temporary files after successful merging.
     """
-    temp_files_pattern = f"{topic}_{discussion_type}_seed*.json"
+    temp_files_pattern = f"{file_name}_{discussion_type}_seed*.json"
     temp_files = sorted(list(cache_dir.glob(temp_files_pattern)))
 
     all_ideas = []
@@ -98,6 +99,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Merge temporary seed idea JSON files."
     )
+    parser.add_argument( # added argument
+        "--file_name",
+        type=Path,
+        required=True,
+        help="Filename for the merged output without suffix.",
+    )
     parser.add_argument(
         "--cache_dir",
         type=Path,
@@ -123,6 +130,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     merge_files(
+        file_name=args.file_name, # added argument
         cache_dir=args.cache_dir,
         topic=args.topic,
         discussion_type=args.discussion_type,
