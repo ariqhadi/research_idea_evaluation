@@ -186,8 +186,6 @@ st.header("Research Idea Generator and Evaluator", divider= True)
 # Initialize session state
 if 'form_submitted' not in st.session_state:
     st.session_state.form_submitted = False
-if 'saved_data' not in st.session_state:
-    st.session_state.saved_data = {}
     
 if st.session_state.form_submitted:
     coll1, coll2 = st.columns([3,1])
@@ -201,6 +199,7 @@ if st.session_state.form_submitted:
             st.markdown(f"#### **Ideas Scope:** {st.session_state.ideas_scope if st.session_state.ideas_scope else 'Not provided'}")
     
     if not st.session_state.idea_generation_complete:
+        coll1, coll2 = st.columns([3,1])
         with coll1:
             step1 = st.empty()
             step1.info("🔄 Generating Research Idea...")
@@ -215,35 +214,34 @@ if st.session_state.form_submitted:
         layout_one_column(first_key, first_idea)
     
 
-    if st.session_state.get('ratings_submitted', False):
-        ratings = st.session_state.ratings_result
-        final_result = [
-            time.strftime("%Y-%m-%d %H:%M:%S"),
-            st.session_state.name,
-            st.session_state.research_domain,
-            st.session_state.academic_position,
-            st.session_state.research_topic,
-            first_idea["Problem"], 
-            first_idea["Existing Methods"], 
-            first_idea["Motivation"], 
-            first_idea["Proposed Method"], 
-            first_idea["Experiment Plan"],
-            ratings["novelty_0"],
-            ratings["novelty_1"],
-            ratings["feasibility_0"],
-            ratings["feasibility_1"],
-            ratings["feasibility_2"],
-            ratings["interestingness_0"],
-            ratings["interestingness_1"],
-            ratings["novelty"],
-            ratings["feasibility"],
-            ratings["interestingness"]
-            
-            ]
-        gsheets_append_row(final_result)
-        st.session_state.ratings_submitted = True
-    else:
-        st.info("Please rate the idea above before proceeding")
+        if st.session_state.get('ratings_submitted', False):
+            ratings = st.session_state.ratings_result
+            final_result = [
+                time.strftime("%Y-%m-%d %H:%M:%S"),
+                st.session_state.name,
+                st.session_state.research_domain,
+                st.session_state.academic_position,
+                st.session_state.research_topic,
+                first_idea["Problem"], 
+                first_idea["Existing Methods"], 
+                first_idea["Motivation"], 
+                first_idea["Proposed Method"], 
+                first_idea["Experiment Plan"],
+                ratings["novelty_0"],
+                ratings["novelty_1"],
+                ratings["feasibility_0"],
+                ratings["feasibility_1"],
+                ratings["feasibility_2"],
+                ratings["interestingness_0"],
+                ratings["interestingness_1"],
+                ratings["novelty"],
+                ratings["feasibility"],
+                ratings["interestingness"]
+                ]
+            gsheets_append_row(final_result)
+            st.session_state.ratings_submitted = True
+        else:
+            st.info("Please rate the idea above before proceeding")
         
         
 else:
