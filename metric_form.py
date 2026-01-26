@@ -58,7 +58,7 @@ def layout_one_column(ideas, ideas_data):
             
         # Float the container to the right side
         float_container.float(
-            "top: 8rem; background-color: #1d2327; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); max-height: 60vh; overflow-y: auto; z-index: 999;"
+            "top: 12rem; background-color: #1d2327; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); max-height: 60vh; overflow-y: auto; z-index: 999;"
         )
     
     with col1:

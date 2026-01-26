@@ -252,10 +252,8 @@ else:
     spacer_left, form_area, spacer_right = st.columns([0.5, 9, 0.5])
     
     with form_area:
-        col1, col2, col3 = st.columns(3)
-
-
         with st.form("identity_form"):
+            col1, col2, col3 = st.columns(3)
             with col1:
                 st.markdown("###### **Name (Real or Pseudonym):**")
                 name = st.text_input("", placeholder="Keep it consistent for tracking", label_visibility="collapsed")
