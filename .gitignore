@@ -10,3 +10,4 @@ env/
 ENV/
 
 .streamlit/secrets.toml
+testing.py
