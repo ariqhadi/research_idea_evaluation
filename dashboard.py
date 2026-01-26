@@ -215,7 +215,7 @@ if st.session_state.form_submitted:
         layout_one_column(first_key, first_idea)
     
 
-    if st.session_state.ratings_submitted:
+    if st.session_state.get('ratings_submitted', False):
         ratings = st.session_state.ratings_result
         final_result = [
             time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -241,6 +241,7 @@ if st.session_state.form_submitted:
             
             ]
         gsheets_append_row(final_result)
+        st.session_state.ratings_submitted = True
     else:
         st.info("Please rate the idea above before proceeding")
         
