@@ -339,5 +339,5 @@ def get_paper_summarization_prompt(lit_rev: str) -> str:
 
         Analyze the chronological evolution of the research and summarize key trends in a concise manner but with sufficient detail.
         the objective is to identify how the research topic has developed over time, noting significant advancements, shifts in focus, and emerging themes.
-        make it easily digestible for a researcher that is busy and wants to get a quick overview of the field, dont make it too long.
+        make it easily digestible for a researcher that is busy and wants to get a quick overview of the field, make it into a concise summmary of maximum 300 words or less.
         """
