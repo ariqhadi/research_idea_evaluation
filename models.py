@@ -30,7 +30,34 @@ class Score_Agent(BaseModel):
     impact_score: int
     summary: str
     recommendation: str
+
+class Score_Novel_Agent(BaseModel):
+    """
+    Agent 1: Parse Idea from user input into structured format.
+    This is the state of the model that holds the parsed idea details throughout the process.
+    """
+    Novel_Q1: int
+    Novel_Q2: int
+    Novel_Q3: int
     
+class Score_Feasibility_Agent(BaseModel):
+    """
+    Agent 1: Parse Idea from user input into structured format.
+    This is the state of the model that holds the parsed idea details throughout the process.
+    """
+    Feasibility_Q1: int
+    Feasibility_Q2: int
+    Feasibility_Q3: int
+    Feasibility_Q4: int
+    
+class Score_Interestingness_Agent(BaseModel):
+    """
+    Agent 1: Parse Idea from user input into structured format.
+    This is the state of the model that holds the parsed idea details throughout the process.
+    """
+    Interesting_Q1: int
+    Interesting_Q2: int
+    Interesting_Q3: int
     
 #####################################
 ## AGENTIC EVALUATOR DEBATE MODELS

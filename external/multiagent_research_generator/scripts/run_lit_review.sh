@@ -64,12 +64,12 @@ cd "$REPO_ROOT" || exit 1
 
 topic_description="$1"
 topic="$1"
-
+file_name="$2" # added variable for file name
 uv run multiagent_research_ideator/src/lit_review.py \
     --engine $llm_engine \
     --mode "topic" \
     --topic_description "${topic_description}" \
-    --cache_name "${cache_dir}/lit_review/${topic}.json" \
+    --cache_name "${cache_dir}/lit_review/${file_name}.json" \
     --max_paper_bank_size 10 \
     --print_all &
 # done

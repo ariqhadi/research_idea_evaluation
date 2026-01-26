@@ -142,17 +142,17 @@ def get_novelty_argument_moderator_prompt(research_idea: str, retrieved_papers: 
             """
 def get_novelty_argument_score_prompt(findings: str) -> str:
     return f"""
-        Based on analysis of retrieved papers and findings: {findings}
+        Based on the finding insights: {findings}
         
-        Generate final evaluation scores (1-10) for:
-        - Novelty: How new/original is this idea compared to retrieved papers?
-        - Feasibility: How realistic is implementation based on similar work?
-        - Impact: Potential significance of results based on the literature?
+        Generate final evaluation scores (1-5) for:
+        - Novel_Q1 :The research idea propose novel methods, models, applications, or explore new directions rather than making only incremental improvements to existing work
+        - Novel_Q2 :This idea provide unique perspectives, theoretical insights, or connect disparate fields in valuable ways
+        - Novel_Q3 :The research idea is novel.
         
-        Provide a recommendation based on the paper analysis and a brief summary explaining the reasoning behind the recommendation.
+        think step by step and thoroughly and provide scores for each questions.
         
         Format as JSON:
-        {{"novelty_score": <1-10>, "feasibility_score": <1-10>, "impact_score": <1-10>, "summary": "<text>", "recommendation": "<Accept/Revise/Reject>"}}
+        {{"Q1": <1-5>, "Q2": <1-5>, "Q3": <1-5>"}}
         
         """
 
@@ -227,17 +227,18 @@ def get_feasibility_argument_moderator_prompt(research_idea: str, retrieved_pape
             """
 def get_feasibility_argument_score_prompt(findings: str) -> str:
     return f"""
-        Based on analysis of retrieved papers and findings: {findings}
+        Based on the finding insights: {findings}
         
-        Generate final evaluation scores (1-10) for:
-        - Novelty: How new/original is this idea compared to retrieved papers?
-        - Feasibility: How realistic is implementation based on similar work?
-        - Impact: Potential significance of results based on the literature?
+        Generate final evaluation scores (0-5) for:
+        - Feasibility_Q1: Based on the research idea's description, the required resources (datasets, tools, software, equipment) are commonly available or publicly accessible
+        - Feasibility_Q2: The research idea require highly specialized or rare expertise (advanced techniques, niche methodologies) that may be difficult to access
+        - Feasibility_Q3: Based on the research idea's scope and complexity, this work can reasonably be completed within a standard research timeframe (6-24 months)
+        - Feasibility_Q4: The research idea is feasible.
         
-        Provide a recommendation based on the paper analysis and a brief summary explaining the reasoning behind the recommendation.
+        think step by step and thoroughly and provide scores for each questions.
         
         Format as JSON:
-        {{"novelty_score": <1-10>, "feasibility_score": <1-10>, "impact_score": <1-10>, "summary": "<text>", "recommendation": "<Accept/Revise/Reject>"}}
+        {{"Feasibility_Q1": <0-5>, "Feasibility_Q2": <0-5>, "Feasibility_Q3": <0-5>, "Feasibility_Q4": <0-5>}}
         
         """
     
@@ -316,15 +317,15 @@ def get_interestingness_argument_score_prompt(findings: str) -> str:
     return f"""
         Based on analysis of retrieved papers and findings: {findings}
         
-        Generate final evaluation scores (1-10) for:
-        - Novelty: How new/original is this idea compared to retrieved papers?
-        - Feasibility: How realistic is implementation based on similar work?
-        - Impact: Potential significance of results based on the literature?
+        Generate final evaluation scores (1-5) for:
+        - Interesting_Q1: The research idea align with current priorities, themes, or calls from major funding agencies and scientific organizations in this field.
+        - Interesting_Q2: The idea address real-world problems or applications that matter beyond academia.
+        - Interesting_Q3: The research idea is interesting.
         
-        Provide a recommendation based on the paper analysis and a brief summary explaining the reasoning behind the recommendation.
+        think step by step and thoroughly and provide scores for each questions.
         
         Format as JSON:
-        {{"novelty_score": <1-10>, "feasibility_score": <1-10>, "impact_score": <1-10>, "summary": "<text>", "recommendation": "<Accept/Revise/Reject>"}}
+        {{"Interesting_Q1": <1-5>, "Interesting_Q2": <1-5>, "Interesting_Q3": <1-5>"}}
         
         """
     

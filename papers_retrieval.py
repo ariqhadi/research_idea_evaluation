@@ -55,6 +55,25 @@ class getReferencePaper():
                 
         papers_for_llm = "\n\n---\n\n".join(paper_list)
         return papers_for_llm
+    
+    @staticmethod
+    def prepare_papers_for_evaluation(list_of_papers):
+        # Just different formatting for evaluation purpose
+        unique_papers = {}
+
+        for paper in list_of_papers:
+            paper_id = paper.get('paperId')
+            if paper_id and paper_id not in unique_papers:  # Skips if paper_id is None
+                paper_str = f"""Paper ID: {paper_id}
+                                Title: {paper.get('title')}
+                                Abstract: {paper.get('abstract')}
+                            """
+                unique_papers[paper_id] = paper_str
+                    
+        paper_list = list(unique_papers.values())
+                
+        papers_for_eval= "\n\n---\n\n".join(paper_list)
+        return papers_for_eval
 
     
 def summarize_papers(papers_text):

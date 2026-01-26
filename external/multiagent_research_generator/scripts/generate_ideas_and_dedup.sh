@@ -94,7 +94,7 @@ for discussion_type in "${discussion_types[@]}"; do
             uv run multiagent_research_ideator/src/grounded_idea_gen.py \
                 --engine $llm_engine \
                 --max_tokens 16384 \
-                --paper_cache "${cache_dir}/lit_review/$topic.json" \
+                --paper_cache "${cache_dir}/lit_review/$file_name.json" \
                 --idea_cache "${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json" \
                 --grounding_k 10 \
                 --method "$method" \
@@ -110,7 +110,7 @@ for discussion_type in "${discussion_types[@]}"; do
             uv run multiagent_research_ideator/src/grounded_idea_gen.py \
                 --engine $llm_engine \
                 --max_tokens 16384 \
-                --paper_cache "${cache_dir}/lit_review/$topic.json" \
+                --paper_cache "${cache_dir}/lit_review/$file_name.json" \
                 --idea_cache "${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json" \
                 --grounding_k 10 \
                 --method "$method" \
@@ -124,7 +124,7 @@ for discussion_type in "${discussion_types[@]}"; do
             uv run multiagent_research_ideator/src/grounded_idea_gen.py \
                 --engine $llm_engine \
                 --max_tokens 16384 \
-                --paper_cache "${cache_dir}/lit_review/$topic.json" \
+                --paper_cache "${cache_dir}/lit_review/$file_name.json" \
                 --idea_cache "${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json" \
                 --grounding_k 10 \
                 --method "$method" \

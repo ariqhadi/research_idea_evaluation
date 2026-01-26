@@ -12,19 +12,22 @@ PROMPT_CONFIGS = {
             "advocate": get_novelty_argument_advocate_prompt,
             "skeptic": get_novelty_argument_skeptic_prompt,
             "moderator": get_novelty_argument_moderator_prompt,
-            "scoring": get_novelty_argument_score_prompt
+            "scoring": get_novelty_argument_score_prompt,
+            "score_model": Score_Novel_Agent
         },
         "feasibility":{
             "advocate": get_feasibility_argument_advocate_prompt,
             "skeptic": get_feasibility_argument_skeptic_prompt,
             "moderator": get_feasibility_argument_moderator_prompt,
-            "scoring": get_feasibility_argument_score_prompt
+            "scoring": get_feasibility_argument_score_prompt,
+            "score_model": Score_Feasibility_Agent
         },
         "interestingness":{
             "advocate": get_interestingness_argument_advocate_prompt,
             "skeptic": get_interestingness_argument_skeptic_prompt,
             "moderator": get_interestingness_argument_moderator_prompt,
-            "scoring": get_interestingness_argument_score_prompt
+            "scoring": get_interestingness_argument_score_prompt,
+            "score_model": Score_Interestingness_Agent
         }
     }
 
@@ -92,7 +95,7 @@ class AgenticDebate:
                 findings = state['messages'][-1].content
             ))
             ]
-        response = self.llm.with_structured_output(Score_Agent).invoke(messages)
+        response = self.llm.with_structured_output(self.prompts["score_model"]).invoke(messages)
         return {"scores": response}
 
 
@@ -121,12 +124,12 @@ class AgenticDebate:
         gan_app = gan_workflow.compile()
         return gan_app
 
-def run_workflow(research_idea_text: str, papers_json: str, eval_metric: str = "novelty"):
+def run_workflow(research_idea_text: str, papers_json: list, eval_metric: str = "novelty"):
     
     debate = AgenticDebate(eval_metric=eval_metric)
     agentic_app = debate.compile_agentic_workflow()
     
-    retrieved_papers_text = getReferencePaper.prepare_papers_for_llm(papers_json)
+    retrieved_papers_text = getReferencePaper.prepare_papers_for_evaluation(papers_json)
 
     print("Running ReAct Agent Evaluation with Pre-Retrieved Papers...")
     print(f"Number of retrieved papers: {len(retrieved_papers_text.split('Paper ID:'))-1}")
