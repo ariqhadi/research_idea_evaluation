@@ -7,7 +7,7 @@ from streamlit_float import *
 ############################################
 ## ONE LAYOUT
 #############################################
-def layout_one_column(ideas, ideas_data):
+def metrics_forms_qs(ideas, ideas_data):
     
     metrics = {
         "novelty": [
@@ -93,7 +93,7 @@ def layout_one_column(ideas, ideas_data):
                 result[f"{key}_{idx}"] = rating
             st.markdown("<br>", unsafe_allow_html=True)
 
-        if st.button("Submit Ratings", type="primary"):
-            st.success("Ratings submitted successfully!")
-            st.session_state.ratings_submitted = True
-            st.session_state.ratings_result = result
+    if st.button("Submit Ratings", type="primary"):
+        st.success("Ratings submitted successfully!")
+        st.session_state.ratings_submitted = True
+        st.session_state.ratings_result = result

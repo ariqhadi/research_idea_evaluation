@@ -8,7 +8,7 @@ from streamlit_float import *
 from get_list_of_papers import call_workflow
 from agentic_evaluator_linear import run_workflow as run_agentic_evaluator
 from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debate
-from metric_form import layout_one_column
+from metric_form import metrics_forms_qs
 from papers_retrieval import getReferencePaper
 
 from utils import gsheets_append_row
@@ -210,7 +210,7 @@ if st.session_state.form_submitted:
         first_key = next(iter(st.session_state.generated_ideas["ideas"]))
         first_idea = st.session_state.generated_ideas["ideas"][first_key]
         
-        layout_one_column(first_key, first_idea)
+        metrics_forms_qs(first_key, first_idea)
     
 
         if st.session_state.get('ratings_submitted', False):
