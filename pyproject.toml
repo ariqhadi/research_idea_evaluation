@@ -17,4 +17,5 @@ dependencies = [
     "python-dotenv",
     "gspread>=6.2.1",
     "oauth2client>=4.1.3",
+    "streamlit-float>=0.4.0",
 ]
