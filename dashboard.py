@@ -198,16 +198,19 @@ if 'saved_data' not in st.session_state:
     st.session_state.saved_data = {}
     
 if st.session_state.form_submitted:
-    with st.expander(f"# Research Topic: {st.session_state.research_topic}", expanded=False):
-        st.success("✅ Form submitted successfully!")
-        st.markdown(f"#### **Name:** {st.session_state.name}")
-        st.markdown(f"#### **Research Domain:** {st.session_state.research_domain}")
-        st.markdown(f"#### **Academic Position:** {st.session_state.academic_position}")
-        st.markdown(f"#### **Research Topic:** {st.session_state.research_topic}")
-        st.markdown(f"#### **Ideas Scope:** {st.session_state.ideas_scope if st.session_state.ideas_scope else 'Not provided'}")
+    col1, col2 = st.columns([3,1])
+    with col1:
+        with st.expander(f"# Research Topic: {st.session_state.research_topic}", expanded=False):
+            st.success("✅ Form submitted successfully!")
+            st.markdown(f"#### **Name:** {st.session_state.name}")
+            st.markdown(f"#### **Research Domain:** {st.session_state.research_domain}")
+            st.markdown(f"#### **Academic Position:** {st.session_state.academic_position}")
+            st.markdown(f"#### **Research Topic:** {st.session_state.research_topic}")
+            st.markdown(f"#### **Ideas Scope:** {st.session_state.ideas_scope if st.session_state.ideas_scope else 'Not provided'}")
     
     if not st.session_state.idea_generation_complete:
-        idea_generation_loading()
+        with col1:
+            idea_generation_loading()
         st.session_state.idea_generation_complete = True
 
         first_key = next(iter(st.session_state.generated_ideas["ideas"]))
@@ -242,7 +245,6 @@ if st.session_state.form_submitted:
             
             ]
         gsheets_append_row(final_result)
-        st.session_state.ratings_submitted = True
     else:
         st.info("Please rate the idea above before proceeding")
         
