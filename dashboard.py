@@ -215,7 +215,7 @@ if st.session_state.form_submitted:
         layout_one_column(first_key, first_idea)
     
 
-    if not st.session_state.get('ratings_submitted', False):
+    if st.session_state.ratings_submitted:
         ratings = st.session_state.ratings_result
         final_result = [
             time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -246,6 +246,9 @@ if st.session_state.form_submitted:
         
         
 else:
+    ##########################################
+    # INITIAL USER INPUT FORM
+    ##########################################
     spacer_left, form_area, spacer_right = st.columns([0.5, 9, 0.5])
     
     with form_area:
