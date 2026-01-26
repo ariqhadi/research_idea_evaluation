@@ -33,9 +33,6 @@ def idea_generation_loading():
     st.session_state.date_time = time.strftime('%Y-%m-%d_%H-%M')
     st.session_state.file_name = f"{clean_name}_{st.session_state.date_time}"
     
-    status_container = st.container()
-    with status_container:
-        step1 = st.empty()
     
     #################################
     # PAPER RETRIEVAL
@@ -43,7 +40,6 @@ def idea_generation_loading():
     
     # PAPER RETRIEVAL START
     # Calling the literature review script
-    step1.info("🔄 Generating Research Idea...")
     lit_rev_path_ = "external/multiagent_research_generator/scripts/run_lit_review.sh"
     cmd = ["bash", str(lit_rev_path_), st.session_state.research_topic, st.session_state.file_name]
     subprocess.run(cmd, text=True, capture_output=True, check=False)
@@ -81,8 +77,6 @@ def idea_generation_loading():
     
     with open(gen_idea_path, "r", encoding="utf-8") as f:
         st.session_state.generated_ideas = json.load(f)
-        
-    step1.success("✅ Research Idea Generated Successfully!")
     
 ##########################################
 # IDEA GENERATION END
@@ -198,8 +192,8 @@ if 'saved_data' not in st.session_state:
     st.session_state.saved_data = {}
     
 if st.session_state.form_submitted:
-    col1, col2 = st.columns([3,1])
-    with col1:
+    coll1, coll2 = st.columns([3,1])
+    with coll1:
         with st.expander(f"# Research Topic: {st.session_state.research_topic}", expanded=False):
             st.success("✅ Form submitted successfully!")
             st.markdown(f"#### **Name:** {st.session_state.name}")
@@ -209,8 +203,12 @@ if st.session_state.form_submitted:
             st.markdown(f"#### **Ideas Scope:** {st.session_state.ideas_scope if st.session_state.ideas_scope else 'Not provided'}")
     
     if not st.session_state.idea_generation_complete:
-        with col1:
+        with coll1:
+            step1 = st.empty()
+            step1.info("🔄 Generating Research Idea...")
             idea_generation_loading()
+            step1.success("✅ Research Idea Generated Successfully!")
+        
         st.session_state.idea_generation_complete = True
 
         first_key = next(iter(st.session_state.generated_ideas["ideas"]))
