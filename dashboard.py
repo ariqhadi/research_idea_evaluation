@@ -17,8 +17,6 @@ from utils import gsheets_append_row
 
 
 def idea_generation_loading():
-    time_start = time.time()
-
     ideas_scope = st.session_state.get('ideas_scope', '').strip()
     
     # Check if scope is meaningful (more than just whitespace or very short typos)
@@ -170,6 +168,7 @@ def idea_evaluation_loading():
 ##########################################
 
 # Increase base font size
+st.set_page_config(page_title="Research Idea Generator and Evaluator", layout="wide")
 st.markdown("""
 <style>
     html, body, [class*="st-"] {
@@ -182,7 +181,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.set_page_config(page_title="Research Idea Generator and Evaluator", layout="wide")
 
 st.header("Research Idea Generator and Evaluator", divider= True)
 # Initialize session state
@@ -217,7 +215,7 @@ if st.session_state.form_submitted:
         layout_one_column(first_key, first_idea)
     
 
-    if st.session_state.get('ratings_submitted', False):
+    if not st.session_state.get('ratings_submitted', False):
         ratings = st.session_state.ratings_result
         final_result = [
             time.strftime("%Y-%m-%d %H:%M:%S"),
