@@ -75,11 +75,11 @@ class getReferencePaper():
         papers_for_eval= "\n\n---\n\n".join(paper_list)
         return papers_for_eval
 
-    
-def summarize_papers(papers_text):
-    llm = get_model()
-    prompt = get_paper_summarization_prompt(papers_text)
-    return llm.invoke(prompt).content
+    @staticmethod
+    def summarize_papers(papers_text):
+        llm = get_model()
+        prompt = get_paper_summarization_prompt(papers_text)
+        return llm.invoke(prompt).content
  
 # query = 'Computing Machinery and Intelligence'
 

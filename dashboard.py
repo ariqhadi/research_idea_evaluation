@@ -8,7 +8,7 @@ from get_list_of_papers import call_workflow
 from agentic_evaluator_linear import run_workflow as run_agentic_evaluator
 from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debate
 from testing_streamlit import layout_one_column
-from papers_retrieval import summarize_papers
+from papers_retrieval import getReferencePaper
 
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -81,7 +81,7 @@ def idea_generation_loading():
     st.subheader("Time for paper retrieval: {:.2f} seconds".format(time.time() - time_start))
     
     relevant_papers = pd.DataFrame(lit_rev["paper_bank"])
-    lit_rev_summary = summarize_papers(lit_rev["paper_bank"])
+    lit_rev_summary = getReferencePaper.summarize_papers(lit_rev["paper_bank"])
     with st.expander(f"List of Retrieved Papers for Idea Generation", expanded=False):
         relevant_papers[["title","year","citationCount","abstract"]]
     
