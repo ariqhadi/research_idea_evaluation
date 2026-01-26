@@ -199,7 +199,6 @@ if st.session_state.form_submitted:
             st.markdown(f"#### **Ideas Scope:** {st.session_state.ideas_scope if st.session_state.ideas_scope else 'Not provided'}")
     
     if not st.session_state.idea_generation_complete:
-        coll1, coll2 = st.columns([3,1])
         with coll1:
             step1 = st.empty()
             step1.info("🔄 Generating Research Idea...")
