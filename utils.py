@@ -1,5 +1,6 @@
 from oauth2client.service_account import ServiceAccountCredentials
 import gspread
+import streamlit as st
 
 def gsheets_append_row(data):
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']

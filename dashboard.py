@@ -52,12 +52,6 @@ def idea_generation_loading():
     # Summary of list of papers 
     st.session_state.lit_rev_summary = getReferencePaper.summarize_papers(lit_rev["paper_bank"])
     
-    # with st.expander(f"List of Retrieved Papers for Idea Generation", expanded=False):
-    #     st.session_state.lit_rev[["title","year","citationCount","abstract"]]
-    
-    # with st.expander(f"Summary of Retrieved Papers for Idea Generation", expanded=False):
-    #     st.write(st.session_state.lit_rev_summary)
-    
     #################################
     # PAPER RETRIEVAL END
     #################################
@@ -108,7 +102,6 @@ def idea_evaluation_loading():
         
     list_of_papers = list_of_papers["paper_bank"]
     
-    time_start = time.time()
     
     
     #####################################
@@ -206,39 +199,42 @@ if st.session_state.form_submitted:
             step1.success("✅ Research Idea Generated Successfully!")
         
         st.session_state.idea_generation_complete = True
+        st.rerun()
 
-        first_key = next(iter(st.session_state.generated_ideas["ideas"]))
-        first_idea = st.session_state.generated_ideas["ideas"][first_key]
+
+    first_key = next(iter(st.session_state.generated_ideas["ideas"]))
+    first_idea = st.session_state.generated_ideas["ideas"][first_key]
         
-        metrics_forms_qs(first_key, first_idea)
-
-        if st.session_state.ratings_submitted:
-            ratings = st.session_state.ratings_result
-            final_result = [
-                time.strftime("%Y-%m-%d %H:%M:%S"),
-                st.session_state.name,
-                st.session_state.research_domain,
-                st.session_state.academic_position,
-                st.session_state.research_topic,
-                first_idea["Problem"], 
-                first_idea["Existing Methods"], 
-                first_idea["Motivation"], 
-                first_idea["Proposed Method"], 
-                first_idea["Experiment Plan"],
-                ratings["novelty_0"],
-                ratings["novelty_1"],
-                ratings["feasibility_0"],
-                ratings["feasibility_1"],
-                ratings["feasibility_2"],
-                ratings["interestingness_0"],
-                ratings["interestingness_1"],
-                ratings["novelty"],
-                ratings["feasibility"],
-                ratings["interestingness"]
-                ]
-            gsheets_append_row(final_result)
-        else:
-            st.info("Please rate the idea above before proceeding")       
+    metrics_forms_qs(first_key, first_idea, coll1, coll2)
+    
+    if st.session_state.get('ratings_submitted', False) and st.session_state.idea_generation_complete: 
+        ratings = st.session_state.ratings_result
+        final_result = [
+            time.strftime("%Y-%m-%d %H:%M:%S"),
+            st.session_state.name,
+            st.session_state.research_domain,
+            st.session_state.academic_position,
+            st.session_state.research_topic,
+            first_idea["Problem"], 
+            first_idea["Existing Methods"], 
+            first_idea["Motivation"], 
+            first_idea["Proposed Method"], 
+            first_idea["Experiment Plan"],
+            ratings["novelty_0"],
+            ratings["novelty_1"],
+            ratings["novelty_2"],
+            ratings["feasibility_0"],
+            ratings["feasibility_1"],
+            ratings["feasibility_2"],
+            ratings["feasibility_3"],
+            ratings["interestingness_0"],
+            ratings["interestingness_1"],
+            ratings["interestingness_2"]
+            ]
+        gsheets_append_row(final_result)
+        st.stop()
+    else:
+        st.info("Please rate the idea above before proceeding")       
 else:
     ##########################################
     # INITIAL USER INPUT FORM
@@ -273,7 +269,6 @@ else:
             submit_button = st.form_submit_button("Submit")
         
     if submit_button:
-        errors = []
         if not name.strip() or not research_domain.strip() or not academic_position.strip() or not research_topic.strip():
             st.error(f"❌ Please fill all the required fields.")
         else:

@@ -7,7 +7,7 @@ from streamlit_float import *
 ############################################
 ## ONE LAYOUT
 #############################################
-def metrics_forms_qs(ideas, ideas_data):
+def metrics_forms_qs(ideas, ideas_data, col1, col2):
     
     metrics = {
         "novelty": [
@@ -44,7 +44,7 @@ def metrics_forms_qs(ideas, ideas_data):
     """, unsafe_allow_html=True)
     float_init()
     
-    col1, col2 = st.columns([3,1])
+    # col1, col2 = st.columns([3,1])
    
     with col2:
         float_container = st.container()
@@ -81,19 +81,22 @@ def metrics_forms_qs(ideas, ideas_data):
         """, unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
         
-        result = {}
-        for key in metrics:
-            st.markdown(f"## {key.capitalize()}")
-            st.markdown("---")
-            for idx, statement in enumerate(metrics[key]):
-                st.markdown(f"<p style='font-size: 1.5rem; margin-bottom:0'><b>{statement}</b></p>", unsafe_allow_html=True)
-                st.caption("0 = Strongly Disagree | 5 = Strongly Agree")
-                rating = st.radio("Idea 1", options=[0, 1, 2, 3, 4, 5], horizontal=True, key=f"rating_{key}_{idx}", label_visibility="collapsed")
-                st.divider()
-                result[f"{key}_{idx}"] = rating
-            st.markdown("<br>", unsafe_allow_html=True)
+        with st.form(key="metrics_form"):
+            result = {}
+            for key in metrics:
+                st.markdown(f"## {key.capitalize()}")
+                st.markdown("---")
+                for idx, statement in enumerate(metrics[key]):
+                    st.markdown(f"<p style='font-size: 1.5rem; margin-bottom:0'><b>{statement}</b></p>", unsafe_allow_html=True)
+                    st.caption("0 = Strongly Disagree | 5 = Strongly Agree")
+                    rating = st.radio("Idea 1", options=[0, 1, 2, 3, 4, 5], horizontal=True, key=f"rating_{key}_{idx}", label_visibility="collapsed")
+                    st.divider()
+                    result[f"{key}_{idx}"] = rating
+                st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("Submit Ratings", type="primary"):
-        st.success("Ratings submitted successfully!")
-        st.session_state.ratings_submitted = True
-        st.session_state.ratings_result = result
+            submitted = st.form_submit_button("Submit Ratings")
+            
+        if submitted:
+            st.success("Ratings submitted successfully!")
+            st.session_state.ratings_submitted = True
+            st.session_state.ratings_result = result
