@@ -11,7 +11,7 @@ from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debat
 from metric_form import metrics_forms_qs
 from papers_retrieval import getReferencePaper
 
-from utils import gsheets_append_row, init_supabase_connection
+from utils import gsheets_append_row, init_supabase_connection, supabase_clean_data
 
 
 
@@ -236,8 +236,9 @@ if st.session_state.form_submitted:
         except Exception as e:
             st.error(f"Failed to append data to Google Sheets: {e}")
         # try:
+        supabase_dict = supabase_clean_data(final_result)
         supabase = init_supabase_connection()
-        supabase.table("thesis_idea_eval").insert(final_result).execute()
+        supabase.table("thesis_idea_eval").insert(supabase_dict).execute()
         # except Exception as e:
         #     st.error(f"Failed to connect to Supabase: {e}")
             
