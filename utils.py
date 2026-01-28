@@ -14,4 +14,4 @@ def gsheets_append_row(data):
 def init_supabase_connection():
     url = st.secrets["connections"]["supabase"]["url"] 
     key = st.secrets["connections"]["supabase"]["key"] 
-    return create_client(url, key)
+    return create_client(str(url), str(key))
