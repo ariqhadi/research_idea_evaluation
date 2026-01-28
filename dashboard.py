@@ -239,7 +239,7 @@ if st.session_state.form_submitted:
         supabase_dict = supabase_clean_data(final_result)
         
         supabase = init_supabase_connection()
-        supabase.table("thesis_ideas_eval").insert(supabase_dict).execute()
+        supabase.table("Ideas_Evalaution_Log").insert(supabase_dict).execute()
         # except Exception as e:
         #     st.error(f"Failed to connect to Supabase: {e}")
             
