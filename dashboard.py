@@ -235,11 +235,11 @@ if st.session_state.form_submitted:
             gsheets_append_row(final_result)
         except Exception as e:
             st.error(f"Failed to append data to Google Sheets: {e}")
-        try:
-            supabase = init_supabase_connection()
-            supabase.table("thesis_idea_eval").insert(final_result).execute()
-        except Exception as e:
-            st.error(f"Failed to connect to Supabase: {e}")
+        # try:
+        supabase = init_supabase_connection()
+        supabase.table("thesis_idea_eval").insert(final_result).execute()
+        # except Exception as e:
+        #     st.error(f"Failed to connect to Supabase: {e}")
             
         st.stop()
     else:
