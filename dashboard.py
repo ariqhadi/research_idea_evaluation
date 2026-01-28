@@ -260,10 +260,10 @@ else:
                 name = st.text_input("", placeholder="Keep it consistent for tracking", label_visibility="collapsed")
             with col2:
                 st.markdown("###### **Research Domain:**")
-                research_domain = st.text_input("Research Domain", label_visibility="collapsed")
+                research_domain = st.text_input("Research Domain", placeholder="e.g Computer Science, Political Science", label_visibility="collapsed")
             with col3:
                 st.markdown("###### **Academic Position:**")
-                academic_position = st.text_input("Academic Position", label_visibility="collapsed")
+                academic_position = st.text_input("Academic Position", placeholder="e.g Postdoc, PhD Student", label_visibility="collapsed")
             
             st.markdown("### **Please enter your research topic of interest:**")
             research_topic = st.text_area(
