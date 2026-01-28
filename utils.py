@@ -17,8 +17,7 @@ def init_supabase_connection():
     return create_client(str(url), str(key))
 
 def supabase_clean_data(data):
-    # Example cleaning function, modify as needed
-    
+
     columns = [
     "datetime", "name", "research_domain", "academic_position", "research_topic",
     "problem", "existing_methods", "motivation", "proposed_method", "experiment_plan",
@@ -26,5 +25,6 @@ def supabase_clean_data(data):
     "feasibility_0", "feasibility_1", "feasibility_2", "feasibility_3",
     "interestingness_0", "interestingness_1", "interestingness_2"
     ]
+    
     final_result_dict = dict(zip(columns, data))
     return final_result_dict
