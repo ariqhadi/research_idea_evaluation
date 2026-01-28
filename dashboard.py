@@ -11,7 +11,7 @@ from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debat
 from metric_form import metrics_forms_qs
 from papers_retrieval import getReferencePaper
 
-from utils import gsheets_append_row
+from utils import gsheets_append_row, init_supabase_connection
 
 
 
@@ -231,7 +231,16 @@ if st.session_state.form_submitted:
             ratings["interestingness_1"],
             ratings["interestingness_2"]
             ]
-        gsheets_append_row(final_result)
+        try:
+            gsheets_append_row(final_result)
+        except Exception as e:
+            st.error(f"Failed to append data to Google Sheets: {e}")
+        try:
+            supabase = init_supabase_connection()
+            supabase.table("thesis_idea_eval").insert(final_result).execute()
+        except Exception as e:
+            st.error(f"Failed to connect to Supabase: {e}")
+            
         st.stop()
     else:
         st.info("Please rate the idea above before proceeding")       
