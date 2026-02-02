@@ -126,7 +126,7 @@ def metrics_forms_qs(ideas, ideas_data, col1, col2):
             submitted = st.form_submit_button("Submit Ratings and Feedback", type="primary")
         
         if submitted:
-            st.success("Ratings submitted successfully!")
+            st.success("Ratings and feedback submitted successfully!")
             st.session_state.ratings_submitted = True
             st.session_state.ratings_result = result
             
