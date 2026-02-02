@@ -231,7 +231,8 @@ if st.session_state.form_submitted:
             ratings["interestingness_1"],
             ratings["interestingness_2"],
             st.session_state.get('feedback_form', ''),
-            first_key
+            first_key,
+            st.session_state.get('ideas_scope', '')
             ]
         try:
             gsheets_append_row(final_result)
