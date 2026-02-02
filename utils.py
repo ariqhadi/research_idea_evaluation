@@ -23,7 +23,7 @@ def supabase_clean_data(data):
     "problem", "existing_methods", "motivation", "proposed_method", "experiment_plan",
     "novelty_0", "novelty_1", "novelty_2",
     "feasibility_0", "feasibility_1", "feasibility_2", "feasibility_3",
-    "interestingness_0", "interestingness_1", "interestingness_2"
+    "interestingness_0", "interestingness_1", "interestingness_2", "feedback_form"
     ]
     
     final_result_dict = dict(zip(columns, data))
