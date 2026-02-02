@@ -131,29 +131,29 @@ def metrics_forms_qs(ideas, ideas_data, col1, col2):
             st.session_state.ratings_result = result
             
 
-import json
-import pandas as pd
+# import json
+# import pandas as pd
 
-st.session_state.ratings_submitted = False
-st.session_state.ratings_result = None
+# st.session_state.ratings_submitted = False
+# st.session_state.ratings_result = None
 
-gen_idea_path = f"/Users/ariq/Public/Data/Thesis/Program/Evaluation_agents/external/multiagent_research_generator/logs/log_2025_07_07/ideas_dedup/A_2026-01-26_08-19_diff_personas_proposer_reviser.json"
+# gen_idea_path = f"/Users/ariq/Public/Data/Thesis/Program/Evaluation_agents/external/multiagent_research_generator/logs/log_2025_07_07/ideas_dedup/A_2026-01-26_08-19_diff_personas_proposer_reviser.json"
 
-lit_rev_path = f"/Users/ariq/Public/Data/Thesis/Program/Evaluation_agents/external/multiagent_research_generator/logs/log_2025_07_07/lit_review/A_2026-01-26_07-51.json"
-with open(lit_rev_path, "r", encoding="utf-8") as f:
-    lit_rev = json.load(f)
+# lit_rev_path = f"/Users/ariq/Public/Data/Thesis/Program/Evaluation_agents/external/multiagent_research_generator/logs/log_2025_07_07/lit_review/A_2026-01-26_07-51.json"
+# with open(lit_rev_path, "r", encoding="utf-8") as f:
+#     lit_rev = json.load(f)
     
-st.session_state.lit_rev_summary = "df"
+# st.session_state.lit_rev_summary = "df"
 
-# List of papers as DataFrame
-st.session_state.lit_rev = pd.DataFrame(lit_rev["paper_bank"]) 
+# # List of papers as DataFrame
+# st.session_state.lit_rev = pd.DataFrame(lit_rev["paper_bank"]) 
 
-with open(gen_idea_path, "r", encoding="utf-8") as f:
-    st.session_state.generated_ideas = json.load(f)    
+# with open(gen_idea_path, "r", encoding="utf-8") as f:
+#     st.session_state.generated_ideas = json.load(f)    
 
-first_key = next(iter(st.session_state.generated_ideas["ideas"]))
-first_idea = st.session_state.generated_ideas["ideas"][first_key]
+# first_key = next(iter(st.session_state.generated_ideas["ideas"]))
+# first_idea = st.session_state.generated_ideas["ideas"][first_key]
 
-coll1, coll2 = st.columns([3,1])
+# coll1, coll2 = st.columns([3,1])
 
-metrics_forms_qs(first_key, first_idea, coll1, coll2)
+# metrics_forms_qs(first_key, first_idea, coll1, coll2)
