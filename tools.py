@@ -33,6 +33,11 @@ def get_config():
         data = json.load(f) 
     return data
 
+def call_llm(prompt):
+    llm = get_model()
+    response = llm.invoke(prompt)
+    return response.content
+
 ###############################
 ## AGENTIC TOOLS
 ###############################

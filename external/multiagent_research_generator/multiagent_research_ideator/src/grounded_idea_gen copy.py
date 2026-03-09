@@ -11,7 +11,6 @@ import retry
 from lit_review_tools import format_papers_for_printing
 from openai import OpenAI
 from utils import cache_output, call_api, shuffle_dict_and_convert_to_string
-from prompt import *
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -30,13 +29,7 @@ REQUIRED_FIELDS = {
     "Motivation",
     "Proposed Method",
     "Experiment Plan",
-    "Confidence Score",
 }
-
-# REQUIRED_FIELDS = {
-#     "Research Abstract",
-#     "Confidence Score",
-# }
 
 
 def check_idea_response_format(resp_str: str) -> Tuple[bool, str]:
@@ -50,7 +43,6 @@ def check_idea_response_format(resp_str: str) -> Tuple[bool, str]:
         return False, f"JSON decoding failed: {e}"
 
     if not isinstance(data, dict):
-        print(data)
         return False, "Top-level JSON is not a dictionary."
 
     if len(data.items()) < 1:
@@ -60,7 +52,6 @@ def check_idea_response_format(resp_str: str) -> Tuple[bool, str]:
         if not isinstance(idea_name, str):
             return False, f"Idea key {idea_name!r} is not a string."
         if not isinstance(idea_body, dict):
-            print(data)
             return False, f"Value for {idea_name!r} is not a dictionary."
 
         missing = REQUIRED_FIELDS - set(idea_body.keys())
@@ -99,19 +90,46 @@ def propose_ideas(
 ):
     ## retrieve top papers (with some randomization)
     top_papers = paper_bank[: int(grounding_k * 2)]
-    # top_papers = paper_bank[: int(grounding_k)]
-    # random.shuffle(top_papers)
+    random.shuffle(top_papers)
     grounding_papers = top_papers[:grounding_k]
 
-    prompt = grounded_idea_rag_gen_prompt(
-        prompt_role=prompt_role,
-        topic_description=topic_description,
-        grounding_papers=format_papers_for_printing(
-                            grounding_papers, include_score=False, include_id=False
-                        ),
-        examples=examples,
-        ideas_num=ideas_n)
-
+    prompt = prompt_role + "\n\n"
+    prompt += (
+        "Now I want you to help me brainstorm some new research project ideas on the topic of: "
+        + topic_description
+        + ".\n\n"
+    )
+    if RAG:
+        prompt += (
+            "Here are some relevant papers on this topic just for your background knowledge:\n"
+            + format_papers_for_printing(
+                grounding_papers, include_score=False, include_id=False
+            )
+            + "\n"
+        )
+    prompt += f"You should generate {ideas_n} different ideas on this topic. Try to be creative and diverse in the idea generation, and do not repeat any similar ideas. "
+    if RAG:
+        prompt += "The above papers are only for inspiration and you should not cite them and just make some incremental modifications. Instead, you should make sure your ideas are novel and distinct from the prior literature. "
+    prompt += "You should aim for projects that can potentially win best paper awards at top research conferences.\n"
+    prompt += "Each idea should be described as: (1) Problem: State the problem statement, which should be closely related to the topic description and something that large language models cannot solve well yet. (2) Existing Methods: Mention some existing benchmarks and baseline methods if there are any. (3) Motivation: Explain the inspiration of the proposed method and why it would work well. (4) Proposed Method: Propose your new method and describe it in detail. The proposed method should be maximally different from all existing work and baselines, and be more advanced and effective than the baselines. You should be as creative as possible in proposing new methods, we love unhinged ideas that sound crazy. This should be the most detailed section of the proposal. (5) Experiment Plan: Specify the experiment steps, baselines, and evaluation metrics.\n"
+    prompt += (
+        "You can follow these examples to get a sense of how the ideas should be formatted (but don't borrow the ideas themselves):\n"
+        + examples
+        + "\n"
+    )
+    prompt += (
+        "You should make sure to come up with your own novel and different ideas for the specified problem: "
+        + topic_description
+        + ". You should try to tackle important problems that are well recognized in the field and considered challenging for current models. For example, think of novel solutions for problems with existing benchmarks and baselines. In rare cases, you can propose to tackle a new problem, but you will have to justify why it is important and how to set up proper evaluation.\n"
+    )
+    # if "claude" in model:
+    #    prompt += "You should make each idea standalone and not dependent on the other ideas.\n"
+    if method == "prompting":
+        prompt += "Focus on novel prompting ideas for now. The proposed method section should specify how to construct the prompts for all steps involved. Try to avoid large-scale pretraining experiments or human studies.\n"
+    elif method == "finetuning":
+       prompt += "Focus on novel finetuning ideas for now. The proposed method section should specify how to get the finetuning data and what's the training objective.\n"
+    else:
+       prompt += "Focus on proposing novel methods, which can include prompting, finetuning, inference-time interventions, etc. The proposed method section should specify all the details involved, such as how to get the data, what's the training objective, how to construct the prompts, etc.\n"
     if existing_ideas:
         prompt += (
             "You should avoid repeating the following existing ideas and try to be different and diverse: "
@@ -250,13 +268,13 @@ def idea_generation_diverse_personas(
     if diverse_role == "proposer/reviser":
         prompt_role_proposer = personas[random.choice(list(personas.keys()))]
         prompt_role_critic = (
-            "You are a critical and experienced reviewer for top conferences."
+            "You are a critical reviewer for top AI conferences like NeurIPS or ACL."
         )
         prompt_role_reviser = prompt_role_proposer
     elif diverse_role == "critic":
-        prompt_role_proposer = "You are an expert researcher."
+        prompt_role_proposer = "You are an expert AI researcher."
         prompt_role_critic = personas[random.choice(list(personas.keys()))]
-        prompt_role_reviser = "You are an expert researcher."
+        prompt_role_reviser = "You are an expert AI researcher."
     else:
         raise ValueError(f"Invalid diverse_role: {diverse_role}")
 
@@ -366,7 +384,7 @@ def idea_generation_iterative_self_critique(
         print(f"--- Iteration {i + 1} of {iterations} ---")
 
         # --- Step 2: Critique ---
-        prompt_role_critic = "You are an expert researcher."
+        prompt_role_critic = "You are an expert AI researcher."
         response_critic, cost_critique = critique_ideas(
             current_ideas_json_str=response_proposer,
             topic_description=topic_description,
@@ -382,7 +400,7 @@ def idea_generation_iterative_self_critique(
         total_cost += cost_critique
 
         # --- Step 3: Regenerate based on critique ---
-        prompt_role_reviser = "You are an expert researcher."
+        prompt_role_reviser = "You are an expert AI researcher."
         response_revise, cost_revise = revise_ideas(
             current_ideas_json_str=response_proposer,
             response_critic=response_critic,
@@ -458,7 +476,7 @@ def idea_generation_parallel_self_critique(
     for i in range(n_critics):
         print(f"--- Critic {i + 1} of {n_critics} ---")
         # --- Step 2: Critique ---
-        prompt_role_critic = "You are an expert researcher."
+        prompt_role_critic = "You are an expert AI researcher."
         response_critic_batch, cost_critique_batch = critique_ideas(
             current_ideas_json_str=response_proposer,
             topic_description=topic_description,
@@ -479,7 +497,7 @@ def idea_generation_parallel_self_critique(
     total_cost += cost_critic_batch
 
     # --- Step 3: Regenerate based on critique ---
-    prompt_role_reviser = "You are an expert researcher."
+    prompt_role_reviser = "You are an expert AI researcher."
     response_revise, cost_revise = revise_ideas(
         current_ideas_json_str=response_proposer,
         response_critic=response_critic,

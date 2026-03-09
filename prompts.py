@@ -144,10 +144,16 @@ def get_novelty_argument_score_prompt(findings: str) -> str:
     return f"""
         Based on the finding insights: {findings}
         
-        Generate final evaluation scores (1-5) for:
+        Generate final evaluation scores (0-5) for:
         - Novel_Q1 :The research idea propose novel methods, models, applications, or explore new directions rather than making only incremental improvements to existing work
         - Novel_Q2 :This idea provide unique perspectives, theoretical insights, or connect disparate fields in valuable ways
         - Novel_Q3 :The research idea is novel.
+        
+        
+        with the description for each of the metric's scores: 
+        Novel_Q1: "0 = No new ideas; 1 = Minor tweaks only; 2 = Mostly incremental; 3 = Some clear new ideas; 4 = Clearly novel; 5 = Exceptional: Opens new directions",
+        Novel_Q2: "0 = No unique perspectives; 1 = Slight or obvious connections; 2 = Limited new perspective; 3 = Some valuable insights or links; 4 = Strong, original perspectives or connections; 5 = Deep insights or powerful cross-field integration",
+        Novel_Q3: "0 = Not at all novel; 1 = Slightly novel; 2 = Somewhat novel; 3 = Moderately novel; 4 = Very novel; 5 = Extremely novel",
         
         think step by step and thoroughly and provide scores for each questions.
         
@@ -235,6 +241,13 @@ def get_feasibility_argument_score_prompt(findings: str) -> str:
         - Feasibility_Q3: Based on the research idea's scope and complexity, this work can reasonably be completed within a standard research timeframe (6-24 months)
         - Feasibility_Q4: The research idea is feasible.
         
+        with the description of each of the metric's scores:
+        Feasibility_Q1: "0 = Not available: Resources are inaccessible; 1 = Very limited: Hard to obtain or restricted; 2 = Limited: Partially available, with constraint; 3 = Moderate: Available with some effort; 4 = High: Mostly common or accessible; 5 = Fully available: Commonly available or public.",
+        Feasibility_Q2: "0 = No specialized expertise required; 1 = Minimal specialized expertise; 2 = Some specialized expertise; 3 = Moderately specialized expertise; 4 = Highly specialized expertise; 5 = Extremely rare or niche expertise required.",
+        Feasibility_Q3: "0 = Cannot be completed in a standard timeframe; 1 = Very unlikely to finish in 6-24 months; 2 = Unlikely to finish in 6-24 months; 3 = Possibly completable in 6-24 months; 4 = Likely completable in 6-24 months; 5 = Easily completable in 6-24 months",
+        Feasibility_Q4: "0 = Not feasible; 1 = Very low feasibility; 2 = Low feasibility; 3 = Moderate feasibility; 4 = High feasibility; 5 = Extremely feasible"
+        
+        
         think step by step and thoroughly and provide scores for each questions.
         
         Format as JSON:
@@ -321,6 +334,12 @@ def get_interestingness_argument_score_prompt(findings: str) -> str:
         - Interesting_Q1: The research idea align with current priorities, themes, or calls from major funding agencies and scientific organizations in this field.
         - Interesting_Q2: The idea address real-world problems or applications that matter beyond academia.
         - Interesting_Q3: The research idea is interesting.
+        
+        with the description of each of the metric's scores:
+        
+        Interesting_Q1: "0 = Not aligned with current priorities; \n\n1 = Very weak alignment; \n\n2 = Weak alignment; \n\n3 = Moderate alignment; \n\n4 = Strong alignment; \n\n5 = Very strong alignment",
+        Interesting_Q2: "0 = No real-world relevance; \n\n1 = Very limited relevance; \n\n2 = Limited relevance; \n\n3 = Moderate relevance; \n\n4 = High relevance; \n\n5 = Extremely high relevance",
+        Interesting_Q3: "0 = Not at all interesting; \n\n1 = Slightly interesting; \n\n2 = Somewhat interesting; \n\n3 = Moderately interesting; \n\n4 = Very interesting; \n\n5 = Extremely interesting"
         
         think step by step and thoroughly and provide scores for each questions.
         

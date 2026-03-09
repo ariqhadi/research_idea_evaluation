@@ -66,8 +66,15 @@ def concatenate_idea(idea_k, idea_v):
         output += "Motivation: " + idea_v["Motivation"] + "\n"
         output += "Proposed Method: " + idea_v["Proposed Method"] + "\n"
         output += "Experiment Plan: " + idea_v["Experiment Plan"] + "\n"
+        output += "Confidence Score: " + idea_v["Confidence Score"] + "\n"
     else:
         output += str(idea_v) + "\n"
+    
+    # if isinstance(idea_v, dict):
+    #     output += "Research Abstract: " + idea_v["Research Abstract"] + "\n"
+    #     output += "Confidence Score: " + idea_v["Confidence Score"] + "\n"
+    # else:
+    #     output += str(idea_v) + "\n"
 
     return output
 

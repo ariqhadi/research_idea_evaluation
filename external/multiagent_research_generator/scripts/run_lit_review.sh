@@ -70,7 +70,7 @@ uv run multiagent_research_ideator/src/lit_review.py \
     --mode "topic" \
     --topic_description "${topic_description}" \
     --cache_name "${cache_dir}/lit_review/${file_name}.json" \
-    --max_paper_bank_size 10 \
+    --max_paper_bank_size 20 \
     --print_all &
 # done
 wait

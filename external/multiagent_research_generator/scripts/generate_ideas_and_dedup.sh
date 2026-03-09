@@ -28,7 +28,7 @@ discussion_types=(
     #"single"
     # "baseline"
     "diff_personas_proposer_reviser"
-    #"diff_personas_critic"
+    # "diff_personas_critic"
     #"parallel_self_critique-2"
     #"parallel_self_critique-3"
     #"parallel_self_critique-4"
@@ -60,6 +60,7 @@ idea_dedup_cache_dir="${cache_dir}/ideas_dedup"
 project_proposal_cache_dir="${cache_dir}/project_proposals"
 
 llm_engine="gpt-4o-mini-2024-07-18"
+# llm_engine="gpt-4.1-mini"
 
 ##########################################################
 
@@ -96,7 +97,7 @@ for discussion_type in "${discussion_types[@]}"; do
                 --max_tokens 16384 \
                 --paper_cache "${cache_dir}/lit_review/$file_name.json" \
                 --idea_cache "${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json" \
-                --grounding_k 10 \
+                --grounding_k 15 \
                 --method "$method" \
                 --ideas_n $ideas_n \
                 --seed $seed \
@@ -112,7 +113,7 @@ for discussion_type in "${discussion_types[@]}"; do
                 --max_tokens 16384 \
                 --paper_cache "${cache_dir}/lit_review/$file_name.json" \
                 --idea_cache "${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json" \
-                --grounding_k 10 \
+                --grounding_k 15 \
                 --method "$method" \
                 --ideas_n $ideas_n \
                 --seed $seed \
@@ -126,7 +127,7 @@ for discussion_type in "${discussion_types[@]}"; do
                 --max_tokens 16384 \
                 --paper_cache "${cache_dir}/lit_review/$file_name.json" \
                 --idea_cache "${seed_ideas_cache_dir}/${file_name}_${discussion_type}_seed${seed}.json" \
-                --grounding_k 10 \
+                --grounding_k 15 \
                 --method "$method" \
                 --ideas_n $ideas_n \
                 --seed $seed \

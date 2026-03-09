@@ -1,6 +1,8 @@
 import argparse
 import json
 import os
+import logging
+from prompt import *
 
 import anthropic
 import retry
@@ -12,24 +14,28 @@ from lit_review_tools import (
 )
 from openai import OpenAI
 from utils import cache_output, call_api, format_plan_json
+from prompt import lit_review_topic_prompt, ranking_paper_prompt
 
 
 def initial_search(
     topic_description, openai_client, model, seed, mode="topic", idea=None
 ):
-    if mode == "topic":
-        ## use the topic description as the query
-        # prompt = "You are a researcher doing literature review on the topic of " + topic_description.strip() + ".\n"
-        # prompt += "You should propose some keywords for querying the Semantic Scholar API to find the most relevant papers to this topic. You can start by extracting and combining the keywords from the topic description. "
-        return "", 'KeywordQuery("' + topic_description.lower().strip() + '")', 0
-    elif mode == "idea":
-        prompt = "You are a professor. You need to evaluate the novelty of a proposed research idea.\n"
-        prompt += "The idea is:\n" + format_plan_json(idea) + "\n\n"
-        prompt += "You want to do a round of paper search in order to find out whether the proposed project has already been done. "
-        prompt += "You should propose some keywords for querying the Semantic Scholar API to find the most relevant papers to this proposed idea. "
+    # if mode == "topic":
+    #     ## use the topic description as the query
+    #     # prompt = "You are a researcher doing literature review on the topic of " + topic_description + ".\n"
+    #     # prompt += "You should propose some keywords for querying the Semantic Scholar API to find the most relevant papers to this topic. You can start by extracting and combining the keywords from the topic description. "
+    #     return "", 'KeywordQuery("' + topic_description.lower().strip() + '")', 0
+    # elif mode == "idea":
+    #     prompt = "You are a professor. You need to evaluate the novelty of a proposed research idea.\n"
+    #     prompt += "The idea is:\n" + format_plan_json(idea) + "\n\n"
+    #     prompt += "You want to do a round of paper search in order to find out whether the proposed project has already been done. "
+    #     prompt += "You should propose some keywords for querying the Semantic Scholar API to find the most relevant papers to this proposed idea. "
 
-    prompt += 'Formulate your query as: KeywordQuery("query"). Just give me one query, and the query can be a concatenation of multiple keywords (just put a space between every word); but please be concise and try to cover the most important aspects.\n'
-    prompt += "Your query (just return the query itself with no additional text):"
+    # prompt += 'Formulate your query as: KeywordQuery("query"). Just give me one query, and the query can be a concatenation of multiple keywords (just put a space between every word); but please be concise and try to cover the most important aspects.\n'
+    # prompt += "Your query (just return the query itself with no additional text):"
+    
+    prompt = initial_paper_query_prompt(topic_description)
+    
     prompt_messages = [{"role": "user", "content": prompt}]
     response, cost = call_api(
         openai_client,
@@ -83,6 +89,10 @@ def next_query(
     )
     prompt += "Please formulate a new query to expand our paper collection with more diverse and relevant papers (you can do so by diversifying the types of queries and minimizing the overlap with previous queries; e.g., try to include all three types of queries if possible). Directly give me your new query without any explanation or additional text, just the query itself:"
 
+    # Ariq's Edit
+    if mode == "topic":
+        prompt = lit_review_topic_prompt(topic_description, grounding_papers_str, "\n".join(past_queries))
+
     prompt_messages = [{"role": "user", "content": prompt}]
     response, cost = call_api(
         openai_client,
@@ -128,6 +138,10 @@ def paper_score(
     prompt += "The papers are:\n" + format_papers_for_printing(paper_lst) + "\n"
     prompt += 'Please score each paper from 1 to 10. Write the response in JSON format with "paperID: score" as the key and value for each paper.\n'
 
+    # Ariq's Edit
+    if mode== "topic":
+        prompt = ranking_paper_prompt(topic_description, format_papers_for_printing(paper_lst), idea)
+
     prompt_messages = [{"role": "user", "content": prompt}]
     response, cost = call_api(
         openai_client,
@@ -153,6 +167,13 @@ def collect_papers(
     mode="topic",
     idea=None,
 ):
+    logging.basicConfig(
+    filename='/Users/ariq/Public/Data/Thesis/Program/Evaluation_agents/temps/lit_review.log',
+    level=logging.INFO,
+    filemode='w',
+    format='%(asctime)s - %(message)s'
+)
+    
     paper_bank = {}
     total_cost = 0
     all_queries = []
@@ -165,6 +186,7 @@ def collect_papers(
     total_cost += cost
     all_queries.append(query)
     paper_lst = parse_and_execute(query)
+    logging.info(f"Initial Query: {query}")
     print("initial query: ", query)
     print("paper_lst: ", paper_lst)
     if paper_lst:
@@ -175,7 +197,7 @@ def collect_papers(
             if paper["abstract"] and len(paper["abstract"].split()) > 20
         ]
         paper_bank = {paper["paperId"]: paper for paper in paper_lst}
-
+        logging.info(f"Paper List: {paper_lst}")
         ## score each paper
         _, response, cost = paper_score(
             paper_lst,
@@ -229,6 +251,7 @@ def collect_papers(
             idea=idea,
         )
         all_queries.append(new_query)
+        logging.info(f"New Query: {new_query}")
         total_cost += cost
         if print_all:
             print("new query: ", new_query)
@@ -237,6 +260,8 @@ def collect_papers(
         except:
             paper_lst = None
 
+        
+        
         if paper_lst:
             ## filter out papers already in paper bank
             paper_lst = [
@@ -247,7 +272,7 @@ def collect_papers(
             paper_lst = [
                 paper for paper in paper_lst if paper["paperId"] not in paper_bank
             ]
-
+            logging.info(f"Paper List: {paper_lst}")
             ## initialize all scores to 0 and add to paper bank
             for paper in paper_lst:
                 paper["score"] = 0
@@ -288,6 +313,8 @@ def collect_papers(
     sorted_data = sorted(data_list, key=lambda x: x["score"], reverse=True)
     sorted_data = dedup_paper_bank(sorted_data)
 
+    logging.info(f"Sorted Paper List: {sorted_data}")
+    
     return sorted_data, total_cost, all_queries
 
 

@@ -140,7 +140,7 @@ def run_workflow(research_idea_text: str, papers_json: list, eval_metric: str = 
         "messages": [],
         "scores": {},
         "iteration": 0,
-        "max_iterations":3
+        "max_iterations":1
     })
     
     return result
