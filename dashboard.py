@@ -39,11 +39,11 @@ def idea_generation_loading():
     
     # PAPER RETRIEVAL START
     # Calling the literature review script
-    lit_rev_path_ = Path(__file__).parent / "external/multiagent_research_generator/scripts/run_lit_review.sh"
+    lit_rev_path_ = "external/multiagent_research_generator/scripts/run_lit_review.sh"
     cmd = ["bash", str(lit_rev_path_), st.session_state.research_topic, st.session_state.file_name]
-    subprocess.run(cmd, text=True, capture_output=True, check=False)
+    subprocess.run(cmd, text=True, capture_output=True, check=True)
     
-    lit_rev_path = Path(__file__).parent / f"external/multiagent_research_generator/logs/log_2025_07_07/lit_review/{st.session_state.file_name}.json"
+    lit_rev_path = f"external/multiagent_research_generator/logs/log_2025_07_07/lit_review/{st.session_state.file_name}.json"
     with open(lit_rev_path, "r", encoding="utf-8") as f:
         lit_rev = json.load(f)
     
