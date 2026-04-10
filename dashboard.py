@@ -5,6 +5,7 @@ import subprocess, time, json
 import concurrent.futures
 from streamlit_float import *
 from pathlib import Path
+import os
 
 from get_list_of_papers import call_workflow
 from agentic_evaluator_linear import run_workflow as run_agentic_evaluator
@@ -41,12 +42,20 @@ def idea_generation_loading():
     # Calling the literature review script
     lit_rev_path_sh = "external/multiagent_research_generator/scripts/run_lit_review.sh"
     cmd = ["bash", str(lit_rev_path_sh), str(st.session_state.research_topic), st.session_state.file_name]
-    try :
-        subprocess.run(cmd, text=True, capture_output=True, check=True)
-    except subprocess.CalledProcessError as e:
-        st.error(f"Error during literature review: {e.stderr}")
-        
+    subprocess.run(cmd, text=True, capture_output=True, check=True)
+    
+    
+    lit_rev_dir = os.path.dirname("external/multiagent_research_generator/logs/lit_review/")
+    if not os.path.isdir(lit_rev_dir):
+        st.error(f"❌ Directory not found: {lit_rev_dir}")
+    
+    
+    
     lit_rev_path = f"external/multiagent_research_generator/logs/lit_review/{st.session_state.file_name}.json"
+    
+    if not os.path.exists(lit_rev_path):
+        st.error(f"❌ File not found: {lit_rev_path}")
+    
     with open(lit_rev_path, "r", encoding="utf-8") as f:
         lit_rev = json.load(f)
     
