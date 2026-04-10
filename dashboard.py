@@ -8,8 +8,8 @@ from pathlib import Path
 import os
 
 from get_list_of_papers import call_workflow
-from agentic_evaluator_linear import run_workflow as run_agentic_evaluator
-from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debate
+# from agentic_evaluator_linear import run_workflow as run_agentic_evaluator
+# from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debate
 from metric_form import metrics_forms_qs
 from papers_retrieval import getReferencePaper
 
@@ -91,77 +91,77 @@ def idea_generation_loading():
 ##########################################
 # IDEA EVALUATION
 ##########################################
-def idea_evaluation_loading():
-    status_container = st.container()
+# def idea_evaluation_loading():
+#     status_container = st.container()
     
-    with status_container:
-        step2 = st.empty()
-    step2.info("🔄 Idea Evaluation Started... ")
+#     with status_container:
+#         step2 = st.empty()
+#     step2.info("🔄 Idea Evaluation Started... ")
     
-    first_key = next(iter(st.session_state.generated_ideas["ideas"]))
-    first_idea = st.session_state.generated_ideas["ideas"][first_key]
+#     first_key = next(iter(st.session_state.generated_ideas["ideas"]))
+#     first_idea = st.session_state.generated_ideas["ideas"][first_key]
     
-    research_idea = "Generated Research Idea: " + str(first_key) + "\n\n" + str(first_idea)
+#     research_idea = "Generated Research Idea: " + str(first_key) + "\n\n" + str(first_idea)
     
-    lit_rev_path_ = "external/multiagent_research_generator/scripts/run_lit_review.sh"
-    file_name_eval = st.session_state.file_name + "_eval"
-    cmd = ["bash", str(lit_rev_path_), research_idea, file_name_eval]
-    subprocess.run(cmd, text=True, capture_output=True, check=False)
+#     lit_rev_path_ = "external/multiagent_research_generator/scripts/run_lit_review.sh"
+#     file_name_eval = st.session_state.file_name + "_eval"
+#     cmd = ["bash", str(lit_rev_path_), research_idea, file_name_eval]
+#     subprocess.run(cmd, text=True, capture_output=True, check=False)
     
-    # List of papers for evaluation result
-    lit_rev_path = f"external/multiagent_research_generator/logs/lit_review/{file_name_eval}.json"
-    with open(lit_rev_path, "r", encoding="utf-8") as f:
-        list_of_papers = json.load(f)
+#     # List of papers for evaluation result
+#     lit_rev_path = f"external/multiagent_research_generator/logs/lit_review/{file_name_eval}.json"
+#     with open(lit_rev_path, "r", encoding="utf-8") as f:
+#         list_of_papers = json.load(f)
         
-    list_of_papers = list_of_papers["paper_bank"]
+#     list_of_papers = list_of_papers["paper_bank"]
     
     
     
-    #####################################
-    # Parallel Evaluation Calls
-    #####################################
+#     #####################################
+#     # Parallel Evaluation Calls
+#     #####################################
     
-    # Create status indicators
-    novelty_status, feasibility_status, interestingness_status = st.empty(), st.empty(), st.empty()
+#     # Create status indicators
+#     novelty_status, feasibility_status, interestingness_status = st.empty(), st.empty(), st.empty()
 
 
-    novelty_status.info("🔄 Novelty evaluation running...")
-    feasibility_status.info("🔄 Feasibility evaluation running...")
-    interestingness_status.info("🔄 Interestingness evaluation running...")
+#     novelty_status.info("🔄 Novelty evaluation running...")
+#     feasibility_status.info("🔄 Feasibility evaluation running...")
+#     interestingness_status.info("🔄 Interestingness evaluation running...")
 
-    status_map = {
-        "novelty": novelty_status,
-        "feasibility": feasibility_status,
-        "interestingness": interestingness_status
-    }
+#     status_map = {
+#         "novelty": novelty_status,
+#         "feasibility": feasibility_status,
+#         "interestingness": interestingness_status
+#     }
     
-    # Run in parallel
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-        futures = {
-            executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "novelty"): "novelty"
-            ,executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "feasibility"): "feasibility"
-            ,executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "interestingness"): "interestingness"
-        }
+#     # Run in parallel
+#     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+#         futures = {
+#             executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "novelty"): "novelty"
+#             ,executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "feasibility"): "feasibility"
+#             ,executor.submit(run_agentic_evaluator_debate, research_idea, list_of_papers, "interestingness"): "interestingness"
+#         }
     
-    results = {}
-    for future in concurrent.futures.as_completed(futures):
-        metric = futures[future]
-        try:
-            results[metric] = future.result()
-            status_map[metric].success(f"✅ {metric.capitalize()} completed")
-        except Exception as e:
-            status_map[metric].error(f"❌ {metric.capitalize()} failed: {e}")
-            results[metric] = None
+#     results = {}
+#     for future in concurrent.futures.as_completed(futures):
+#         metric = futures[future]
+#         try:
+#             results[metric] = future.result()
+#             status_map[metric].success(f"✅ {metric.capitalize()} completed")
+#         except Exception as e:
+#             status_map[metric].error(f"❌ {metric.capitalize()} failed: {e}")
+#             results[metric] = None
 
-    # #############################################################################
+#     # #############################################################################
     
-    st.subheader("Agentic Evaluator Result:")
-    st.session_state.agentic_result_novelty = results["novelty"]["scores"].model_dump()
-    st.session_state.agentic_result_feasibility = results["feasibility"]["scores"].model_dump()
-    st.session_state.agentic_result_interestingness = results["interestingness"]["scores"].model_dump()
+#     st.subheader("Agentic Evaluator Result:")
+#     st.session_state.agentic_result_novelty = results["novelty"]["scores"].model_dump()
+#     st.session_state.agentic_result_feasibility = results["feasibility"]["scores"].model_dump()
+#     st.session_state.agentic_result_interestingness = results["interestingness"]["scores"].model_dump()
     
-    # st.write(result)
-    step2.success("✅ Ideas Evaluated")
+#     # st.write(result)
+#     step2.success("✅ Ideas Evaluated")
     
 ##########################################
 # IDEA EVALUATION END
