@@ -42,9 +42,7 @@ def idea_generation_loading():
     # Calling the literature review script
     lit_rev_path_sh = "external/multiagent_research_generator/scripts/run_lit_review.sh"
     cmd = ["bash", str(lit_rev_path_sh), str(st.session_state.research_topic), st.session_state.file_name]
-    output_subprocess = subprocess.run(cmd, text=True, capture_output=True, check=True)
-    
-    st.error(output_subprocess)
+    subprocess.run(cmd, text=True, capture_output=True, check=True)
     
     lit_rev_path = f"external/multiagent_research_generator/logs/lit_review/{st.session_state.file_name}.json"
     
@@ -69,14 +67,14 @@ def idea_generation_loading():
 # IDEA GENERATION
 ##########################################
 
-    # idea_gen_path = "external/multiagent_research_generator/scripts/generate_ideas_and_dedup.sh"
+    idea_gen_path = "external/multiagent_research_generator/scripts/generate_ideas_and_dedup.sh"
 
-    # cmd = ["bash", str(idea_gen_path), scoped_idea, st.session_state.file_name]
-    # subprocess.run(cmd, text=True, capture_output=True, check=False)
-    # gen_idea_path = f"external/multiagent_research_generator/logs/ideas_dedup/{st.session_state.file_name}_diff_personas_proposer_reviser.json"
+    cmd = ["bash", str(idea_gen_path), scoped_idea, st.session_state.file_name]
+    subprocess.run(cmd, text=True, capture_output=True, check=False)
+    gen_idea_path = f"external/multiagent_research_generator/logs/ideas_dedup/{st.session_state.file_name}_diff_personas_proposer_reviser.json"
     
-    # with open(gen_idea_path, "r", encoding="utf-8") as f:
-    #     st.session_state.generated_ideas = json.load(f)
+    with open(gen_idea_path, "r", encoding="utf-8") as f:
+        st.session_state.generated_ideas = json.load(f)
     
 ##########################################
 # IDEA GENERATION END
