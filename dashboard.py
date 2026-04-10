@@ -44,7 +44,7 @@ def idea_generation_loading():
     cmd = ["bash", str(lit_rev_path_sh), str(st.session_state.research_topic), st.session_state.file_name]
     output_subprocess = subprocess.run(cmd, text=True, capture_output=True, check=True)
     
-    st.error(output_subprocess.stdout)
+    st.error(output_subprocess)
     
     lit_rev_path = f"external/multiagent_research_generator/logs/lit_review/{st.session_state.file_name}.json"
     
