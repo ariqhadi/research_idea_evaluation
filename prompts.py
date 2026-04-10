@@ -2,6 +2,39 @@
 # WORKFLOW LINEAR AGENTIC AI
 ###################################
 
+def get_best_idea_prompt(formatted_json: str) -> str:
+    return f"""
+                You are an experienced researcher evaluating research ideas rigorously and impartially.
+
+                Below are research ideas generated for the following topic. The ideas are presented in randomized order. Read each idea carefully before making any judgment.
+
+                Evaluate each idea on the following dimensions (score 1-10 each):
+                - Novelty: how distinct is it from existing methods described
+                - Feasibility: how realistic is it to execute given typical research constraints
+                - Methodological rigor: how well does the experiment plan match and validate the proposed method
+                - Alignment: how directly does it address the topic description and scope
+
+                After scoring all ideas, select the single best idea based on the highest average score. In case of a tie, prefer methodological rigor.
+
+                TOPIC DESCRIPTION AND IDEAS:
+                {formatted_json}
+                
+                OUTPUT FORMAT:
+                Return ONLY a JSON object with this exact structure:
+                {{
+                    "topic_description": "<the original topic description>",
+                    "ideas": {{
+                        "<PUT_IDEA_TITLE_HERE>": {{
+                            "Problem": "...",
+                            "Existing Method": "...",
+                            "Motivation": "...",
+                            "Proposed Method": "...",
+                            "Experiment Plan": "..."
+                        }}
+                    }}
+                }}
+                """
+
 def get_planning_prompt(proposal: str, num_papers: str) -> str:
     return f"""
     Given this research proposal: {proposal}

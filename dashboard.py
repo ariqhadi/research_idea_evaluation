@@ -12,6 +12,7 @@ from get_list_of_papers import call_workflow
 # from agentic_evaluator_debate import run_workflow as run_agentic_evaluator_debate
 from metric_form import metrics_forms_qs
 from papers_retrieval import getReferencePaper
+from prompts import get_best_idea_prompt
 
 from utils import gsheets_append_row, init_supabase_connection, supabase_clean_data
 
@@ -207,9 +208,10 @@ if st.session_state.form_submitted:
         st.session_state.idea_generation_complete = True
         st.rerun()
 
-
-    first_key = next(iter(st.session_state.generated_ideas["ideas"]))
-    first_idea = st.session_state.generated_ideas["ideas"][first_key]
+    best_idea = get_best_idea_prompt(json.loads(st.session_state.generated_ideas))
+    
+    first_key = next(iter(best_idea["ideas"]))
+    first_idea = best_idea["ideas"][first_key]
         
     metrics_forms_qs(first_key, first_idea, coll1, coll2)
     
