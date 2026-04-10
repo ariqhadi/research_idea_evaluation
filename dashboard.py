@@ -42,14 +42,9 @@ def idea_generation_loading():
     # Calling the literature review script
     lit_rev_path_sh = "external/multiagent_research_generator/scripts/run_lit_review.sh"
     cmd = ["bash", str(lit_rev_path_sh), str(st.session_state.research_topic), st.session_state.file_name]
-    subprocess.run(cmd, text=True, capture_output=True, check=True)
+    output_subprocess = subprocess.run(cmd, text=True, capture_output=True, check=True)
     
-    
-    lit_rev_dir = os.path.dirname("external/multiagent_research_generator/logs/lit_review/")
-    if not os.path.isdir(lit_rev_dir):
-        st.error(f"❌ Directory not found: {lit_rev_dir}")
-    
-    
+    st.error(output_subprocess.stdout)
     
     lit_rev_path = f"external/multiagent_research_generator/logs/lit_review/{st.session_state.file_name}.json"
     
