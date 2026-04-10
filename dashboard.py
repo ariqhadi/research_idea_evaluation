@@ -43,7 +43,7 @@ def idea_generation_loading():
     cmd = ["bash", str(lit_rev_path_), st.session_state.research_topic, st.session_state.file_name]
     subprocess.run(cmd, text=True, capture_output=True, check=True)
     
-    lit_rev_path = f"external/multiagent_research_generator/logs/log_2025_07_07/lit_review/{st.session_state.file_name}.json"
+    lit_rev_path = f"external/multiagent_research_generator/logs/lit_review/{st.session_state.file_name}.json"
     with open(lit_rev_path, "r", encoding="utf-8") as f:
         lit_rev = json.load(f)
     
@@ -66,7 +66,7 @@ def idea_generation_loading():
 
     cmd = ["bash", str(idea_gen_path), scoped_idea, st.session_state.file_name]
     subprocess.run(cmd, text=True, capture_output=True, check=False)
-    gen_idea_path = f"external/multiagent_research_generator/logs/log_2025_07_07/ideas_dedup/{st.session_state.file_name}_diff_personas_proposer_reviser.json"
+    gen_idea_path = f"external/multiagent_research_generator/logs/ideas_dedup/{st.session_state.file_name}_diff_personas_proposer_reviser.json"
     
     with open(gen_idea_path, "r", encoding="utf-8") as f:
         st.session_state.generated_ideas = json.load(f)
@@ -97,7 +97,7 @@ def idea_evaluation_loading():
     subprocess.run(cmd, text=True, capture_output=True, check=False)
     
     # List of papers for evaluation result
-    lit_rev_path = f"external/multiagent_research_generator/logs/log_2025_07_07/lit_review/{file_name_eval}.json"
+    lit_rev_path = f"external/multiagent_research_generator/logs/lit_review/{file_name_eval}.json"
     with open(lit_rev_path, "r", encoding="utf-8") as f:
         list_of_papers = json.load(f)
         
