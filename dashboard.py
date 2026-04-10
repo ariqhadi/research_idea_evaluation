@@ -211,6 +211,8 @@ if st.session_state.form_submitted:
 
     best_idea = call_llm(get_best_idea_prompt(st.session_state.generated_ideas))
     
+    best_idea = json.loads(best_idea)
+    
     first_key = next(iter(best_idea["ideas"]))
     first_idea = best_idea["ideas"][first_key]
         
