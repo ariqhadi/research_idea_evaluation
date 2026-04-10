@@ -168,12 +168,12 @@ def collect_papers(
     mode="topic",
     idea=None,
 ):
-    logging.basicConfig(
-    filename='/Users/ariq/Public/Data/Thesis/Program/Evaluation_agents/temps/lit_review.log',
-    level=logging.INFO,
-    filemode='w',
-    format='%(asctime)s - %(message)s'
-)
+#     logging.basicConfig(
+#     filename='/Users/ariq/Public/Data/Thesis/Program/Evaluation_agents/temps/lit_review.log',
+#     level=logging.INFO,
+#     filemode='w',
+#     format='%(asctime)s - %(message)s'
+# )
     
     paper_bank = {}
     total_cost = 0
@@ -187,7 +187,7 @@ def collect_papers(
     total_cost += cost
     all_queries.append(query)
     paper_lst = parse_and_execute(query)
-    logging.info(f"Initial Query: {query}")
+    # logging.info(f"Initial Query: {query}")
     print("initial query: ", query)
     print("paper_lst: ", paper_lst)
     if paper_lst:
@@ -198,7 +198,7 @@ def collect_papers(
             if paper["abstract"] and len(paper["abstract"].split()) > 20
         ]
         paper_bank = {paper["paperId"]: paper for paper in paper_lst}
-        logging.info(f"Paper List: {paper_lst}")
+        # logging.info(f"Paper List: {paper_lst}")
         ## score each paper
         _, response, cost = paper_score(
             paper_lst,
@@ -252,7 +252,7 @@ def collect_papers(
             idea=idea,
         )
         all_queries.append(new_query)
-        logging.info(f"New Query: {new_query}")
+        # logging.info(f"New Query: {new_query}")
         total_cost += cost
         if print_all:
             print("new query: ", new_query)
@@ -273,7 +273,7 @@ def collect_papers(
             paper_lst = [
                 paper for paper in paper_lst if paper["paperId"] not in paper_bank
             ]
-            logging.info(f"Paper List: {paper_lst}")
+            # logging.info(f"Paper List: {paper_lst}")
             ## initialize all scores to 0 and add to paper bank
             for paper in paper_lst:
                 paper["score"] = 0
@@ -314,7 +314,7 @@ def collect_papers(
     sorted_data = sorted(data_list, key=lambda x: x["score"], reverse=True)
     sorted_data = dedup_paper_bank(sorted_data)
 
-    logging.info(f"Sorted Paper List: {sorted_data}")
+    # logging.info(f"Sorted Paper List: {sorted_data}")
     
     return sorted_data, total_cost, all_queries
 
