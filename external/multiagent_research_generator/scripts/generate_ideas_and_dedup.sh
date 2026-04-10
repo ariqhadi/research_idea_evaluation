@@ -53,7 +53,7 @@ method="empirical"  # options: prompting, finetuning, empirical
 rag_value="True"
 
 # cache dir ( "logs/log_yyyy_mm_dd/")
-cache_dir="logs/log_2025_07_07"
+cache_dir="logs"
 
 seed_ideas_cache_dir="${cache_dir}/ideas_seed"
 idea_dedup_cache_dir="${cache_dir}/ideas_dedup"

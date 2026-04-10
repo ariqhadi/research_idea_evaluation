@@ -38,7 +38,7 @@ discussion_types=(
 ) 
 
 # cache dir ( "logs/log_yyyy_mm_dd/")
-cache_dir="logs/log_2025_07_07"
+cache_dir="logs"
 
 llm_engine="gpt-4o-mini-2024-07-18"
 

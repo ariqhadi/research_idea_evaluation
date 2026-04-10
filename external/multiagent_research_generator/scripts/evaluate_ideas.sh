@@ -15,7 +15,7 @@ topic_names=(
 )
 
 # cache dir ( "logs/log_yyyy_mm_dd/")
-cache_dir="logs/log_2025_07_07"
+cache_dir="logs"
 
 project_proposal_cache_dir="${cache_dir}/project_proposals"
 combined_project_proposal_cache_dir="${cache_dir}/project_proposals_combined"

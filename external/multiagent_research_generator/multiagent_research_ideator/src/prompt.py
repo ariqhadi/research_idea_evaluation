@@ -43,6 +43,43 @@ def grounded_idea_rag_gen_prompt(
     ideas_num: int
 ):
     return f"""
+    
+    [RETRIEVED PAPERS (read carefully first)]
+    {grounding_papers}
+
+    [TASK]
+    Topic: {topic_description}
+
+    Before generating any ideas, complete this analysis:
+
+    STEP 1 — LANDSCAPE ANALYSIS (required, do this first):
+    - SHARED_ASSUMPTION: What assumption do most of these papers make?
+    - RECURRING_FAILURE: What limitation appears across multiple papers?
+    - UNTOUCHED_ANGLE: What aspect of the problem has no paper addressed?
+    - TRANSFERABLE_METHOD: Is there a method in one paper that could solve 
+    another paper's stated limitation?
+
+    STEP 2 — GENERATE {ideas_num} IDEAS
+    Each idea must directly target a gap identified in Step 1, and the reasoning of the feasibility must be clear that it adhere to the scope in the topic description (if any).
+
+ 
+    Each idea should be described as: 
+    (1) Problem: State the problem statement, which should be closely related to the topic description and something that large language models cannot solve well yet. 
+    (2) Existing Methods: Mention some existing benchmarks and baseline methods if there are any. 
+    (3) Motivation: Explain the inspiration of the proposed method and why it would work well. 
+    (4) Proposed Method: Propose your new method and describe it in detail. The method must be chosen based on what genuinely fits the research question, not based on novelty or technical complexity. It should be clearly distinct from the existing methods critiqued above and better suited to answering the research question. This should be the most detailed section of the proposal. 
+    (5) Experiment Plan: Specify the study design, data sources, analytical approach, and how you will assess the quality or validity of your findings. Use evaluation criteria appropriate to your chosen methodology.
+    (6) Confidence Score: Your holistic judgment of the idea's promise. which includes its novelty (How distinct and original is this idea relative to existing work), feasibility (How realistic is it to implement and test this idea given typical research constraints) and interestingness (How significant could the contribution be to the real world if it is successful). The confidence score should be an string of integer from 1 to 10, with 10 being the most promising.
+
+ 
+    [REQUIREMENTS]
+    - Ideas must differ from each other in methodology, not just application domain
+    - Do not propose ideas that are direct extensions of a single retrieved paper
+    - If an idea could have been written without reading the retrieved papers, discard it`
+    """
+
+    """
+    
     You are an accomplished researcher with expertise in identifying impactful problems and developing innovative solutions. Your goal is to generate research ideas that are novel, rigorous, and have the potential to make significant contributions to the field.
     
     I want you to help me brainstorm some new research project ideas on the topic description (and with scope if any) of: 
@@ -74,7 +111,11 @@ def grounded_idea_rag_gen_prompt(
     You should make sure to come up with your own ideas for the specified problem: 
     {topic_description}. 
     
+    
+    You are an accomplished researcher generating novel research ideas.
+
     """
+    
 
 def initial_paper_query_prompt(topic_description: str):
         # using structured decomposition and also boolean logic search
