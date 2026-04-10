@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import logging
+from turtle import st
 from prompt import *
 
 import anthropic
@@ -418,16 +419,15 @@ if __name__ == "__main__":
         cache_dir = os.path.dirname(args.cache_name)
         if not os.path.exists(cache_dir):
             os.makedirs(cache_dir)
-        logging.info(
-        f"Saving lit review output to {args.cache_name} with {len(paper_bank)} papers and total cost {total_cost}"
-        )
+
         output_dict = {
             "topic_description": args.topic_description,
             "all_queries": all_queries,
             "paper_bank": paper_bank,
             "total_cost": total_cost,
         }
+        
+        st.error(f"❌ dict is empty: {output_dict}")
+        
         cache_output(output_dict, args.cache_name)
-        logging.info(
-        f"Saving lit review output to {args.cache_name} with {len(paper_bank)} papers and total cost {total_cost}"
-        )
+
