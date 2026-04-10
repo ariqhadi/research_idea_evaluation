@@ -418,6 +418,9 @@ if __name__ == "__main__":
         cache_dir = os.path.dirname(args.cache_name)
         if not os.path.exists(cache_dir):
             os.makedirs(cache_dir)
+        logging.info(
+        f"Saving lit review output to {args.cache_name} with {len(paper_bank)} papers and total cost {total_cost}"
+        )
         output_dict = {
             "topic_description": args.topic_description,
             "all_queries": all_queries,
@@ -425,3 +428,6 @@ if __name__ == "__main__":
             "total_cost": total_cost,
         }
         cache_output(output_dict, args.cache_name)
+        logging.info(
+        f"Saving lit review output to {args.cache_name} with {len(paper_bank)} papers and total cost {total_cost}"
+        )
