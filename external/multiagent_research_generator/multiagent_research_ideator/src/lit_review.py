@@ -3,7 +3,6 @@ import json
 import os
 import logging
 # from turtle import st
-import streamlit as st
 from prompt import *
 
 import anthropic
@@ -427,8 +426,6 @@ if __name__ == "__main__":
             "paper_bank": paper_bank,
             "total_cost": total_cost,
         }
-        
-        st.error(f"❌ dict is empty: {output_dict}")
         
         cache_output(output_dict, args.cache_name)
 
