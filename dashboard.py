@@ -13,6 +13,7 @@ from get_list_of_papers import call_workflow
 from metric_form import metrics_forms_qs
 from papers_retrieval import getReferencePaper
 from prompts import get_best_idea_prompt
+from tools import call_llm
 
 from utils import gsheets_append_row, init_supabase_connection, supabase_clean_data
 
@@ -208,7 +209,7 @@ if st.session_state.form_submitted:
         st.session_state.idea_generation_complete = True
         st.rerun()
 
-    best_idea = get_best_idea_prompt(st.session_state.generated_ideas)
+    best_idea = call_llm(get_best_idea_prompt(st.session_state.generated_ideas))
     
     first_key = next(iter(best_idea["ideas"]))
     first_idea = best_idea["ideas"][first_key]
