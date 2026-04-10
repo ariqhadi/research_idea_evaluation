@@ -54,7 +54,7 @@ def idea_generation_loading():
     lit_rev_path = f"external/multiagent_research_generator/logs/lit_review/{st.session_state.file_name}.json"
     
     if not os.path.exists(lit_rev_path):
-        st.error(f"❌ File not found. list file: {os.listdir(lit_rev_dir)}")
+        st.error(f"❌ File not found. list file: {os.getcwd()}")
     
     with open(lit_rev_path, "r", encoding="utf-8") as f:
         lit_rev = json.load(f)
