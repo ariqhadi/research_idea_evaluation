@@ -283,7 +283,7 @@ else:
             research_topic = st.text_area(
                 label = "Research Topic",
                 label_visibility="collapsed",
-                placeholder="""Please provide a detailed and explicit description of your research topic. Please avoid vague descriptions. \nExample: Understanding the impact of economic stressor (inflation, oil prices, etc) and shifts in popular music consumption patterns in lower-income countries.
+                placeholder="""Please provide a detailed and explicit description of your research topic as much as possible. Please avoid vague descriptions. 
                 """
             )
             st.markdown("### **Please describe the scope of research ideas you are interested in (optional):**")
