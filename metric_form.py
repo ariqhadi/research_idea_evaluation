@@ -79,6 +79,8 @@ def metrics_forms_qs(ideas, ideas_data, col1, col2):
         st.subheader(ideas)
         
         for key in ideas_data:
+            if "confidence" in key.lower():
+                continue
             col1, col2 = st.columns([0.75,2])
             col1.markdown(f"### **{key}:**")
             col2.markdown(f"<p style='font-size: 1.2rem;'>{ideas_data[key]}</p>", unsafe_allow_html=True)

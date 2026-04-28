@@ -34,7 +34,6 @@ Respond in JSON format: {{"paperID": score, ...}}
 
 """
 
-
 def grounded_idea_rag_gen_prompt(
     prompt_role: str,
     topic_description: str,
@@ -43,44 +42,49 @@ def grounded_idea_rag_gen_prompt(
     ideas_num: int
 ):
     return f"""
+    You are an accomplished interdisciplinary researcher generating novel research ideas. 
     
     [RETRIEVED PAPERS (read carefully first)]
     {grounding_papers}
 
     [TASK]
+    YOUR MAIN TASK IS TO GENERATE RESEARCH IDEAS TO ANSWER THE RESEARCH QUESTION IN THE TOPIC DESCRIPTION BELOW.
+    
     Topic: {topic_description}
 
-    Before generating any ideas, complete this analysis:
+    There are 2 steps you need to do in this task for generating research ideas.
 
-    STEP 1 — LANDSCAPE ANALYSIS (required, do this first):
-    - SHARED_ASSUMPTION: What assumption do most of these papers make?
-    - RECURRING_FAILURE: What limitation appears across multiple papers?
-    - UNTOUCHED_ANGLE: What aspect of the problem has no paper addressed?
-    - TRANSFERABLE_METHOD: Is there a method in one paper that could solve 
-    another paper's stated limitation?
+    STEP 1. Analysis prior research (required, do this first):
+    - Shared_assumptions: What assumption do most of these papers make, and what would research look like if each assumption were false?
+    - recurring_limitations: What limitation appears across multiple papers?
+    - research_gaps: What aspect of the problem has no paper addressed?
+    - transferrable_methods: Is there a method in one paper that could solve another paper's stated limitation?
 
-    STEP 2 — GENERATE {ideas_num} IDEAS
-    Each idea must directly target a gap identified in Step 1, and the reasoning of the feasibility must be clear that it adhere to the scope in the topic description (if any).
-
+    STEP 2. Generated {ideas_num} numbers of ideas
+    - UNDERSTAND THE NUANCE AND THE QUESTION BEHIND THE TOPIC DESCRIPTION.
+    - Each ideas should be Novel (The research idea propose novel methods, models, applications, or explore new directions rather than making only incremental improvements to existing work), out-of-the-box and highly interesting (address real-world problems or applications that matter beyond academia) that are distinct from one another
+    - You may expand scope only to address a gap identified in Step 1 that the original topic description fails to capture. Expansions that take the idea outside the domain of the topic description are not permitted. but make sure to clearly explain your reasoning in the motivation section of each idea.
+    - Each idea must be directly inspired by the analysis in Step 1, and the reasoning of the feasibility must be clear that it adhere to the scope in the topic description (if any).
  
     Each idea should be described as: 
-    (1) Problem: State the problem statement, which should be closely related to the topic description and something that large language models cannot solve well yet. 
+    (1) Problem: State the problem statement, which should be closely related to the topic description. 
     (2) Existing Methods: Mention some existing benchmarks and baseline methods if there are any. 
-    (3) Motivation: Explain the inspiration of the proposed method and why it would work well. 
-    (4) Proposed Method: Propose your new method and describe it in detail. The method must be chosen based on what genuinely fits the research question, not based on novelty or technical complexity. It should be clearly distinct from the existing methods critiqued above and better suited to answering the research question. This should be the most detailed section of the proposal. 
-    (5) Experiment Plan: Specify the study design, data sources, analytical approach, and how you will assess the quality or validity of your findings. Use evaluation criteria appropriate to your chosen methodology.
+    (3) Motivation: Explain the inspiration. Identify the closest existing work and state precisely what makes this idea non-derivable from it. If you cannot articulate this, replace the idea.
+    (4) Proposed Method: Propose your new method and describe it in detail. The method must be chosen based on what genuinely fits the research question. It should be clearly distinct from the existing methods critiqued above and better suited to answering the research question. This should be the most detailed section. 
+    (5) Experiment Plan: Specify the study design, data sources, analytical approach, and how you will assess the quality or validity of your findings. Use evaluation criteria appropriate to your chosen methodology. Experiment Plan must be detailed and specific.
     (6) Confidence Score: Your holistic judgment of the idea's promise. which includes its novelty (How distinct and original is this idea relative to existing work), feasibility (How realistic is it to implement and test this idea given typical research constraints) and interestingness (How significant could the contribution be to the real world if it is successful). The confidence score should be an string of integer from 1 to 10, with 10 being the most promising.
 
- 
-    [REQUIREMENTS]
+     [Important Notes]
+    - The proposed method must be chosen based on what genuinely fits the research question and the identified gaps.
+    - If there are constraint in the topic description, the motivation and feasibility of each idea must be clearly explained to show how it adheres to the constraint.
     - Ideas must differ from each other in methodology, not just application domain
     - Do not propose ideas that are direct extensions of a single retrieved paper
-    - If an idea could have been written without reading the retrieved papers, discard it`
+    - If an idea could have been written without reading the retrieved papers, discard it
+
     """
 
     """
     
-    You are an accomplished researcher with expertise in identifying impactful problems and developing innovative solutions. Your goal is to generate research ideas that are novel, rigorous, and have the potential to make significant contributions to the field.
     
     I want you to help me brainstorm some new research project ideas on the topic description (and with scope if any) of: 
     {topic_description}.

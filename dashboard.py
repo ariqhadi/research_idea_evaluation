@@ -283,7 +283,8 @@ else:
             research_topic = st.text_area(
                 label = "Research Topic",
                 label_visibility="collapsed",
-                placeholder="Example: Novel prompting methods to reduce social biases and stereotypes of large language models"
+                placeholder="""Please provide a detailed and explicit description of your research topic. Please avoid vague descriptions. \nExample: Understanding the relationship between economic stressor (inflation, oil prices, etc) and shifts in popular music consumption patterns in lower-income economies. Focus on genre preference, lyrical theme, or emotional valence as proxies for taste
+                """
             )
             st.markdown("### **Please describe the scope of research ideas you are interested in (optional):**")
             ideas_scope = st.text_area(
