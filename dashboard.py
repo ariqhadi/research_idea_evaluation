@@ -227,7 +227,7 @@ if st.session_state.form_submitted:
             st.session_state.academic_position,
             st.session_state.research_topic,
             first_idea["Problem"], 
-            first_idea["Existing Methods"], 
+            first_idea["Existing Method"], 
             first_idea["Motivation"], 
             first_idea["Proposed Method"], 
             first_idea["Experiment Plan"],
